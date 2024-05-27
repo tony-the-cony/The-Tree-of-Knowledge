@@ -1,0 +1,462 @@
+                                        ABSTRACT
+
+
+
+
+
+                                        Time series analysis stands as a focal point within the data min-
+                                        ing community, serving as a cornerstone for extracting valuable
+                                        insights crucial to a myriad of real-world applications. Recent
+                                        advancements in Foundation Models (FMs) have fundamentally
+                                        reshaped the paradigm of model design for time series analysis,
+                                        boosting various downstream tasks in practice. These innovative
+                                        approaches often leverage pre-trained or fine-tuned FMs to harness
+                                        generalized knowledge tailored specifically for time series analysis.
+                                        In this survey, we aim to furnish a comprehensive and up-to-date
+                                        overview of FMs for time series analysis. While prior surveys have
+                                        predominantly focused on either the application or the pipeline
+                                        aspects of FMs in time series analysis, they have often lacked an                
+                                        in-depth understanding of the underlying mechanisms that eluci-           statistical methods across numerous time series applications. Foun-
+                                        date why and how FMs benefit time series analysis. To address this        dation models (FMs), such as large language models (LLMs) in
+                                        gap, our survey adopts a model-centric classification, delineating        natural language processing (NLP) [120] and advanced models in
+                                        various pivotal elements of time-series FMs, including model ar-          computer vision (CV) [3], have emerged as powerful paradigms ca-
+                                        chitectures, pre-training techniques, adaptation methods, and data        pable of achieving state-of-the-art performances in their respective
+                                        modalities. Overall, this survey serves to consolidate the latest ad-     fields. The success of these FMs can be attributed to their ability
+                                        vancements in FMs pertinent to time series analysis, accentuating         to leverage vast amounts of data to cultivate general-purpose repre-
+                                        their theoretical underpinnings, recent strides in development, and       sentations, subsequently fine-tuning them, or even deploying them
+                                        avenues for future research exploration.                                  directly in a zero-shot manner to excel across a diverse spectrum
+                                                                                                                  of downstream tasks. This approach not only economizes on the
+                                                                                                                  need for task-specific model development but also encapsulates a
+                                        1       INTRODUCTION                                                      broad understanding of the world, endowing these models with
+                                        Time series data are characterized by their sequential order and          exceptional versatility and efficiency [7].
+                                        temporal dependencies, encapsulating valuable information about              Inspired by the remarkable achievements of FMs in broad do-
+                                        the dynamics of diverse systems and processes [48, 89, 116]. Various      mains like CV and NLP, the concept of Time Series Foundation
+                                        time series data (e.g., stock price, traffic flow, electricity) present   Models (TSFMs) has garnered attention as a promising direction
+                                        unique challenges and opportunities for computational analysis,           for time series analysis. TSFMs aim to harness the power of the
+                                        each requiring tailored approaches to effectively capture their in-       foundation model paradigm to develop generalized models profi-
+                                        herent properties. The analysis and understanding of time series          cient in understanding and forecasting time series data spanning
+                                        data is an important piece of data mining, facilitating crucial in-       diverse domains. By capitalizing on large-scale time series datasets,
+                                        sights and decisions in many domains [49, 97], including finance          TSFMs hold the promise of attaining superior performance on a
+                                        [20, 68, 111], healthcare [54, 63], cloud computing [109, 119], envi-     spectrum of time series tasks, offering a unified framework that
+                                        ronments [15, 72], energy [75, 124], and urban computing [82, 91].        can accelerate research and application developments in this field.
+                                           In recent years, the advancements of deep learning have revo-             Despite the promising prospects and rapid development of TSFMs,
+                                        lutionized the field of time series analysis. The motivation behind       a systematic analysis of TSFMs from a methodological standpoint
+                                        deep learning techniques lies in their ability to automatically learn     has been notably absent in prior literature. Existing studies, as de-
+                                        comprehensive representations from raw data, thus capturing com-          picted in Table 1, have concentrated on either the data perspective
+                                        plex nonlinear relationships and temporal dependencies without            [51] or the pipeline perspective [48] of TSFMs. To bridge this gap,
+                                        the need for manual feature engineering. Such capability leads to         this survey aims to provide a comprehensive methodological anal-
+                                        significant performance improvements compared with traditional            ysis of foundation models for learning a variety of time series. This
+                                                                                                                  examination will center on scrutinizing their model architectures,
+                                        † Q.   Wen is the corresponding author. Email: qingsongedu@gmail.com      pre-training techniques, adaptation methods, and data modalities.
+
+
+Table 1: Comparison between our survey and related surveys. 
+(Abbr: Taxonomy means the main taxonomy used in the
+survey. Standard means standard time series, Spatial means
+spatial time series, Others include trajectory and event).     
+
+                                                                         to multimodality; 2) architecture refers to which deep neural net-
+          work is adopted as the backbone of the FM, with Transformers
+                                                                         [88, 98] being a popular choice for their ability to handle sequential
+Through this endeavor, we seek to illuminate an overall picture of       data effectively; 3) Pre-training involves how to train the model
+core elements in TSFMs, thereby enhancing comprehension regard-          on large, diverse datasets to gain a broad understanding of the
+ing the rationale behind their efficacy and the mechanisms driving       data, using techniques like supervised learning or self-supervised
+their substantial potential in time series analysis.                     learning; 4) Adaptation, such as fine-tuning or few-shot learning,
+   In contrast to previous surveys, this manuscript incorporates         is employed to accommodate the pre-trained FMs to specific tasks.
+the most extensive array of time series data types (see Table 1),        This comprehensive framework of FMs, spanning from data modal-
+spatial time series, as well as other types such as the trajectory       ity to adaptation, facilitates the understanding of using them in
+and event. We further summarize the developmental roadmap of             time series analysis.
+current TSFMs in Figure 1, in order to foster further innovations        Categories of Time Series. A time series is commonly described
+and understanding in the dynamic and ever-evolving landscape of          as an ordered sequence of data points. Figure 2 illustrates various
+TSFMs. In short, our major contributions lie in three aspects:           types of time series discussed in this survey, including standard
+• Comprehensive and up-to-date survey. We offer a compre-                time series, spatial time series, trajectories, and events. Note that
+  hensive and up-to-date survey on foundation models for a wide          trajectories and events can be regarded as time series since each
+  spectrum of time series, encompassing standard time series, spa-       data point is associated with a specific timestamp (and location),
+  tial time series, and other types (i.e., trajectories and events).     allowing for analysis using time series techniques such as anomaly
+• Novel methodology-centric taxonomy. We introduce a novel               detection. These time series are formulated as follows.
+  taxonomy that offers a thorough analysis from a methodological            Definition 1 (Standard Time Series). The standard time series is
+  standpoint on TSFMs with the first shot, enabling a full under-        defined as a sequence of 𝑇 data points ordered by time. It can be
+  standing of the mechanism on why and how FMs can achieve               denoted by X = {x1, x2, · · · , x𝑇 } ∈ R𝑇 ×𝐷 , where x𝑡 ∈ R𝐷 is the
+  admirable performance in time series data.                             data point at time step 𝑡, and 𝐷 is the dimension of each data points.
+• Future research oppotunities. We discuss and highlight future          When 𝐷 = 1, X is referred to as a univariate time series, while
+  avenues for enhancing time series analysis using foundation            𝐷 > 1, X is a multivariate time series.
+  models, urging researchers to delve deeper into this area.                Definition 2 (Spatial Time Series). It refers to a sequence of data
+                                                                         points with both temporal and spatial dimensions, which can be rep-
+2   BACKGROUND                                                           resented by X = {X1, X2, · · · , X𝑇 } ∈ R𝑁 ×𝑇 ×𝐷 , where X𝑡 ∈ R𝑁 ×𝐷
+Foundation Models. Foundation models (FMs), also known as                denotes the signals generated by 𝑁 sensors with each equipped
+large pre-trained models, are a class of deep models that are pre-       with 𝐷 features. Besides, the 𝑁 sensors are usually associated with
+trained on vast amounts of data, thus equipped with a wide range of      spatial correlations, according to which the spatial time series can be
+general knowledge and patterns. To this end, these models serve as       further divided into two subtypes: i) spatio-temporal graph, when
+a versatile starting point for various tasks across different domains.   the spatial correlation of those sensors is described by a graph 𝐺
+Specifically, FMs can be fine-tuned or adapted to specific tasks with    with adjacent matrix A ∈ R𝑁 ×𝑁 ; ii) spatio-temporal raster, when
+relatively small amounts of task-specific data, showcasing remark-       sensors are distributed uniformly as a grid in geographical space.
+able flexibility and efficiency. In CV, FMs such as text-prompted           Definition 3 (Trajectory). A trajectory is a sequence of times-
+model CLIP [76] and visual-prompted model SAM [53] have pro-             tamped locations that describe the movements of an object in the
+pelled advancements in image recognition, object detection, and          geographical space. It can be formulated as T = {(𝑙 1, 𝑙 2, · · · , 𝑙𝑇 } ∈
+more. In NLP, FMs such as BERT [25] and GPT-3 [9] have revolu-           R𝑇 ×2 , where 𝑙𝑡 means the object’s location at time 𝑡, represented
+tionized text understanding and generation tasks. Inspired by the        by the two-dimensional coordinates, i.e., latitude and longitude.
+great success of FMs in the above domains, this survey delves into          Definition 4 (Event Sequence). An event sequence is a temporally
+the utilization of these models in the realm of time series analysis.    ordered set of events that describe the progression of actions or
+   Specifically, we look through TSFMs from a methodology per-           occurrences within a specific context. It can be formalized as E =
+spective: the components of foundation models encompass the data         {(𝑒 1, 𝑡 1 ), (𝑒 2, 𝑡 2 ), . . . , (𝑒𝑛 , 𝑡𝑛 )}, where each 𝑒𝑖 is an event described
+modality, architecture, pre-training, and adaptation technicals: 1)      by a predicate-argument structure that captures the nature of the
+data modality refers to the type of data used for model training,        interaction or occurrence, and 𝑡𝑖 denotes the timestamp at which
+from single modality such as time series, text, images, and audio        the event 𝑒𝑖 occurs.
+Foundation Models for Time Series Analysis: A Tutorial and Survey
+
+3    TAXONOMY                                                                                      techniques. This method-centric view is pivotal for researchers,
+The proposed taxonomy is illustrated in Figure 3, and the related                                  providing valuable insights into the mechanisms of why and how
+works can be found in Table 2 in the Appendix. The proposed                                        foundation models show great potential for time series analysis.
+taxonomy unfolds a structured and comprehensive classification                                        Diving into the details of data categories, we classify the time
+to enhance the understanding of foundation models on time series                                   series data into three distinct types: standard time series, spatial
+analysis. It is organized into four hierarchical levels, starting with                             time series, and others, which encompass trajectory and event data.
+the data category, followed by the model architecture, pre-training                                Standard time series data, characterized by their sequential order
+techniques, and finally, the application domain. Unlike previous                                   and temporal dependencies, form the backbone of traditional time
+taxonomies, ours distinguishes itself by delving deeper into the                                   series analysis. Spatial time series data, on the other hand, introduce
+foundation models from the methodology perspective, with a keen                                    an additional layer of complexity by incorporating geographical
+focus on their architectural designs, pre-training, and adaptation                                 or spatial information, making them crucial for applications in
+
+
+urban computing and environmental monitoring. Lastly, the “others”          capabilities. Concurrently, Moirai [100] introduces an approach
+category, including trajectory and event data, represents diverse           with its masked encoder-based universal forecasting transformer,
+datasets where time plays a critical role, such as the movement of          coupled with a new pre-training dataset (LOTSA), containing 27
+objects over time or the occurrence of specific events, offering a          billion observations from nine distinct domains. Additionally, the
+broadened perspective on time series analysis.                              exploration extends to diffusion models like TimeGrad [79] and
+   From the methodology perspective: i) regarding model architec-           TransFusion [85], which primarily focus on optimizing a variational
+ture, the proposed taxonomy highlights three primary categories:            bound on data likelihood, transforming white noise into meaningful
+Transformer-based, non-Transformer-based, and diffusion-based               samples of the target distribution.
+models. Transformer-based models leverage self-attention mecha-                Pre-training from scratch can be expensive, which has spurred
+nisms to capture long-range dependencies within time series data,           the development of alternative approaches that leverage pre-trained
+offering significant advantages in handling sequential data. Non-           models from other domains, such as large language, vision, and
+transformer-based models, with their diverse architectures, cater           acoustic models. For instance, LLM4TS [12] and TEMPO [11] suc-
+to a wide range of time series tasks by efficiently processing spatial      cessfully perform time series forecasting across various datasets by
+and temporal patterns. Diffusion-based models, a novel addition,            fine-tuning GPT-2 [77] backbones, predicated on the notion that
+employ stochastic processes to model the data generation process,           LLMs can be adapted to process non-linguistic datasets by activat-
+presenting innovative solutions for time series analysis. ii) In terms      ing their inherent capabilities. Similarly, Voice2Series [107] engages
+of pre-training techniques, the proposed taxonomy divides them              in the synchronization of time series and acoustic data to harness
+into fully-supervised and self-supervised methods, the latter of            the classification prowess of an acoustic model for time series data.
+which includes contrastive, generative, and hybrid approaches. This         Another approach is presented by Wimmer et al. [99], who utilize
+classification shows how different foundation models are trained            vision-language models (VLMs) to predict market changes. Beyond
+with or without labels. iii) Adaptation strategies, such as zero-shot       fine-tuning existing models, a distinct methodology involves di-
+learning, prompt engineering, tokenization, and fine-tuning, fur-           rect inference from LLMs for time series forecasting, showcasing
+ther exemplify the versatility of foundation models in customizing          commendable zero-shot performance. A notable example of this
+to specific time series applications.                                       is LLMTime [38], which introduces various strategies for effec-
+                                                                            tively tokenizing time series data and transforming discrete token
+4     DATA PERSPECTIVE                                                      distributions into flexible continuous value densities.
+In this section, we explore advancements in TSFMs from various                 Beyond approaches that focus solely on a single data modal-
+data perspectives: standard time series, spatial time series, and others.   ity of time series, there have been initiatives towards developing
+We further categorize our discussion within each subsection into            multi-modal, task-oriented foundation models. A notable exam-
+task-oriented or general-purpose foundation models.                         ple is Time-LLM [50], which introduces a reprogramming frame-
+                                                                            work to integrate textual and time series information, repurposing
+4.1    Standard Time Series                                                 an existing LLM into time series forecasters without additional
+Standard time series possess diverse properties, including varying          computational costs. In a similar vein, METS [54] employs a train-
+sampling rates and temporal patterns, which pose significant chal-          able ECG encoder alongside a frozen language model to process
+lenges in developing relevant foundation models. These models               paired ECG and clinical reports. Further, there is emerging research
+aim to identify universal patterns within extensive time series data        on directly prompting LLMs for specific time series tasks. For in-
+from varied sources, either to enhance specific tasks or for broad          stance, PromptCast [104] converts numerical inputs and outputs
+time series analysis.                                                       into prompts, framing the forecasting task as a sentence-to-sentence
+   Most of the existing attempts are in the category of task-oriented       conversion to leverage language models directly for forecasting.
+standard time series foundation models. They leverage single or             Other studies, such as one involving LLMs prompted with historical
+multiple data modalities to craft robust models targeting particular        stock price data, company metadata, and past economic/financial
+time series tasks, typically forecasting or classification. For models      news, aim to enhance stock return forecasting [111]. Another ex-
+involved only in a single (i.e., time series) modality, they may either     ample combines a graph neural network with ChatGPT1 to predict
+be developed from scratch or on existing pre-trained models from            stock movements [20], illustrating the diverse applications of these
+other domains like large language or vision models [29, 120].               methodologies. Additional noteworthy efforts include [103] and
+   In the first group, Lag-Llama [78] and TimeGPT-1 [37] represent          [63].
+pioneering efforts as forecasting foundation models. Both models               Notably, recent efforts have been directed towards creating general-
+undergo pre-training on a vast collection of time series data span-         purpose, single-modality standard time series foundation models.
+ning multiple domains. Lag-Llama employs a decoder-only trans-              TS2Vec [114] represents a pioneering effort by introducing a uni-
+former architecture, utilizing lags as covariates, whereas TimeGPT-         versal framework for learning time series representations through
+1 features an encoder-decoder structure with several transformer            contrastive learning. SimMTM [27] explores cross-domain applica-
+layers, facilitating efficient zero-shot forecasting. Another note-         tions, where pre-trained models via masked time series modeling
+worthy contribution is TTMs [33], a recent endeavor in creating a           exhibit superior fine-tuning performance in forecasting and classifi-
+domain-agnostic forecasting model built upon TSMixer [32], which            cation tasks. More recent works, such as Timer [65] and UniTS [36],
+itself is pre-trained on diverse time series datasets from various          further advance the field by facilitating general time series analysis
+domains. Echoing Lag-Llama’s approach, TimesFM [24] emerges
+as a decoder-only model exhibiting strong zero-shot forecasting            
+Foundation Models for Time Series Analysis: A Tutorial and Survey
+
+
+through single, large-scale pre-trained models. Moreover, there is a
+growing interest in adapting pre-trained models, such as LLMs, for
+broad time series analysis applications. OFA [121] and TEST [86] ex-
+emplify this trend, though both approaches necessitate end-to-end
+fine-tuning for specific tasks.
+
+4.2     Spatial Time Series
+In complex real-world systems, time series data often display intri-                         Figure 4: Architectures of TSFMs.
+cate spatial dependencies alongside temporal dynamics, manifest-           directly with the model’s diffusion steps to create a stochastic, time-
+ing in forms such as spatio-temporal graphs and rasters. Similar to        conditioned interpolator and forecasting network.
+the discussion in Sec. 4.1, research on spatial time series typically
+encompasses areas such as forecasting and classification. Unlike           4.3     Others
+foundation models for standard time series, most existing research         In addition to standard and spatial time series, various other types
+on spatial time series is still in its early stages, often characterized   of data incorporate the temporal dimension, including trajecto-
+by being domain-specific, single-modality, and task-oriented. In           ries, events, and clinical records. A majority of studies in this cat-
+the following, we categorize related works into two specific data          egory focus on trajectory data. For Transformer-based models,
+modalities and discuss them in different subsections.                      AuxMobLCast [105] fine-tunes pre-trained LLMs through mobility
+                                                                           prompting and auxiliary POI Category classification to forecast hu-
+4.2.1 Spatio-Temporal Graph. Most foundation models for spatio-
+                                                                           man mobility patterns, effectively bridging the gap between natural
+temporal graphs are task-oriented and only focused on graph data.
+                                                                           language processing and temporal sequence prediction. LLM-Mob
+In the transportation sector, TFM [91] utilizes graph structures
+                                                                           [90] encodes human mobility data into structured prompts that in-
+and algorithms to analyze the behavior and interactions within
+                                                                           struct LLMs to consider both long-term and short-term behavioral
+transportation systems, showing promising results in urban traffic
+                                                                           patterns, along with time-specific context, to generate accurate and
+forecasting. ST-LLM [59] combines spatio-temporal information
+                                                                           explainable predictions of future locations. For non-Transformer-
+with a partially frozen LLM to improve traffic predictions, while
+                                                                           based models, Trembr [35] leverages auto-encoding techniques to
+DiffSTG [96] applies denoising diffusion models to spatio-temporal
+                                                                           extract road network and temporal information embedded in trajec-
+graphs for probabilistic traffic forecasting. Efforts towards domain-
+                                                                           tories effectively. While START [46] introduces a hybrid approach
+agnostic models include STEP [82], which links spatio-temporal
+                                                                           to trajectory embedding learning by combining masked language
+GNNs with a pre-trained transformer for enhanced forecasting by
+                                                                           model [25] and SimCLR [18] to enhance its learning capability.
+learning from extensive historical data. Similarly, STGCL [62] and
+                                                                           More recently, GTM [57] separates trajectory features into three
+SPGCL [55] explore the integration of contrastive learning into
+                                                                           domains, which can be masked and generated independently to
+spatio-temporal graph forecasting, indicating its potential benefits.
+                                                                           meet specific input and output requirements of a given task. Then,
+Research on general-purpose models for spatio-temporal graphs is
+                                                                           GTM is pre-trained by reconstructing densely sampled trajectories
+limited. A notable example, USTD [44], introduces a unified model
+                                                                           in an auto-regressive manner given re-sampled sparse counter-
+for both forecasting and kriging tasks, employing an uncertainty-
+                                                                           parts. For the diffusion-based model, DiffTraj [123] reconstructs
+aware diffusion approach to address diverse challenges effectively.
+                                                                           and synthesizes geographic trajectories from white noise through
+                                                                           a conditioned reverse trajectory denoising process.
+4.2.2 Spatio-Temporal Raster. Spatio-temporal raster refers to a
+data modality that captures and organizes spatial information over
+                                                                           5     METHODOLOGY PERSPECTIVE
+various time points in a grid-like format. This modality is primar-
+ily utilized in climate foundation models. For instance, FourCast-         In this section, we dissect TSFMs from a methodology perspective,
+Net [72] is a global, data-driven weather forecasting model deliver-       focusing on architecture and pipeline (including pre-train and adap-
+ing accurate short to medium-range predictions worldwide. Similar          tation) intricacies. This discussion aims to elucidate the intricate
+models, such as FengWu [14] and W-MAE [66], follow suit. No-               mechanisms driving these models’ efficacy and adaptability.
+tably, Pangu-Weather [5], which is trained on 39 years of global data,     5.1     Architecture
+achieves superior deterministic forecasting outcomes across all eval-
+                                                                           As shown in Figure 4, we first delve into the architecture of TSFMs,
+uated variables compared to leading numerical weather prediction
+                                                                           including Transformer-based models, non-Transformer-based nodels
+systems. On a different note, ClimaX [69] aims at general-purpose
+                                                                           and diffusion-based models, focusing on the underlying mechanisms
+climate foundation models, pre-trained with diverse datasets cover-
+                                                                           that shape their capabilities, as well as how they could be applied
+ing various variables, spatio-temporal scopes, and physical contexts.
+                                                                           on various time series.
+It is designed for fine-tuning across a wide array of climate and
+weather-related tasks, such as forecasting, projection, and down-          5.1.1 Transformer-based Models. The architecture of FMs has seen
+scaling, even for atmospheric variables and spatio-temporal scales         a significant convergence towards the Transformer [88], a model
+not encountered during its pre-training phase. However, there is           architecture first introduced by Vaswani et al. in 2017. The core
+a scarce number of domain-agnostic models for spatio-temporal              innovation of the Transformer lies in its utilization of the attention
+raster data. DYffusion [10], for example, capitalizes on the tempo-        mechanism, which allows the model to dynamically focus on differ-
+ral dynamics inherent in raster data, integrating these dynamics           ent parts of the input data. The attention function can be succinctly
+
+                                                        √︁
+described as Attention(𝑄, 𝐾, 𝑉 ) = Softmax(𝑄𝐾𝑇 / 𝑑𝑘 )𝑉 , where           for spatial modeling, integrating time encoding for temporal as-
+𝑄, 𝐾, and 𝑉 represent the queries, keys, and values matrices re-         pects, embodying principles of transformers in addressing traffic
+spectively, each with dimensions 𝑇 × 𝑑𝑘 , and 𝑑𝑘 serves as a scaling     system’s spatial-temporal dependencies. Besides simultaneously
+factor to moderate the dot products’ magnitude. It is evident from       modeling spatial and temporal relationships, there exists an alterna-
+the formula that the attention mechanism has the capability to           tive approach that augments the Transformer model with additional
+learn global, long-range dependencies in data. This distinguishes it     spatial models or external spatial information to enhance its capa-
+from previous architectures, which were often limited by their local     bilities in the temporal modeling of time series. An example of this
+receptive fields or dependency windows. Besides, the Transformer’s       is STEP [82], which uses unsupervised pre-trained TransFormer
+design is inherently friendly to parallelization, which allows for       blocks to model temporal relationship from long-term history time
+significant scalability, enabling the processing of large datasets and   series, while applying a graph structure learner and spatio-temporal
+the construction of models with billions of parameters. Such scala-      GNNs based on the representation of TransFormer blocks. Further-
+bility and efficiency in capturing intricate data patterns have led to   more, the application of Transformer models extends to the domain
+the widespread adoption of the Transformer architecture beyond           of spatial-temporal prompt learning, as evidenced by initiatives
+its initial application in natural language processing (NLP) [25] to     such as MetePFL [15] and FedWing [16].
+fields including computer vision (CV) [28], speech [43], video [2],         In addition to conventional time series data, the Transformer
+time series (Table 2) and beyond.                                        architecture has demonstrated efficacy across a diverse array of
+    The choice of foundation model framework remains debated             temporal datasets, such as trajectory and healthcare records, as
+in the realm of time series analysis, contrasting the trend towards      summarized in Table 2. This expansion highlights the Transformer’s
+decoder-only models in natural language processing. Notable works        versatile capacity for temporal data analysis.
+in this area includes encoder-only [36, 70, 100], encoder-decoder
+                                                                         5.1.2 Non-Transformer-based Models. Excluding the widespread
+[1, 26, 37], and decoder-only [24, 65, 78] models. Ansari et al. [1]
+                                                                         adoption of Transformers, a diverse array of traditional pre-training
+analyze the applicability of the encoder-decoder framework to
+                                                                         methods leveraged models such as Multi-Layer Perceptrons (MLPs)
+decoder-only models. Liu et al. [65] discuss that while the encoder-
+                                                                         [33], Recurrent Neural Networks (RNNs) [35], and Convolutional
+only model is favored in time series forecasting for its effectiveness
+                                                                         Neural Networks (CNNs) [101] as the backbone for pre-training.
+on small datasets, the decoder-only architecture, with its strong
+                                                                         These models, each with their unique strengths, are notable for
+generalization and capacity, could be preferred for large-scale time
+                                                                         their effectiveness in both conventional and spatial time series data.
+series models. The diversity in the architectural choices underscores
+                                                                            MLPs and CNNs are both acclaimed for their capabilities in
+the potential and necessity for further exploration within this field.
+                                                                         modeling spatial and temporal data effectively. CNN-based archi-
+    In terms of standard time series analysis, the Transformer ar-
+                                                                         tectures, in particular, have garnered significant attention in self-
+chitecture leverages its sequence modeling capabilities to capture
+                                                                         supervised learning for general time series representation, with
+temporal dynamics. This includes either repurposing pretrained
+                                                                         a notable emphasis on the usage of ResNet [27, 118] and dilated
+LLMs for time series to leverage their preexisting sequence mod-
+                                                                         convolution layers [71, 114] as foundational backbones. Those ap-
+eling strengths [104], or directly using the Transformer architec-
+                                                                         proaches predominantly employ 1D convolutional operations. In
+ture as a base for TSFMs, training from scratch to achieve models
+                                                                         contrast, TimesNet [101] introduces a novel perspective by convert-
+best suited for the specifics of time series data [37]. Besides, vari-
+                                                                         ing 1D time series data into 2D tensors, facilitating the adaptive
+ous techniques have been innovated to augment the functionality
+                                                                         identification of multi-periodicity and the extraction of complex
+of Transformer models in time series analysis comprehensively.
+                                                                         temporal variations through the use of a parameter-efficient incep-
+A common practice in TSFMs segments time series into patches,
+                                                                         tion block. MLP-based models, on the other hand, are lauded for
+which can effectively encapsulate local dynamics within input to-
+                                                                         their lightweight design, offering benefits in terms of reduced com-
+kens [11, 12, 24, 50, 70, 78, 100, 121]. Another critical design is
+                                                                         putational time and cost. TSMixer [32] and TTMs [33], as instances,
+the normalization layer, where reversible instance normalization
+                                                                         both claiming superior efficiency in memory usage and processing
+[52] techniques, standardizing data through instance-specific mean
+                                                                         speed while still delivering competitive performance.
+and variance then reverting it at the output layer, have found ex-
+                                                                            RNNs have been acknowledged for their proficiency in temporal
+tensive application across the above models. Moreover, specialized
+                                                                         data modeling [35, 41]. Recently, there has been a resurgence of
+approaches such as multi-resolution analysis, exemplified by Moirai
+                                                                         interest in RNN architectures, which poses a compelling challenge
+[100] through the employment of varying patch sizes, and decompo-
+                                                                         to the prevailing Transformer-based models. This trend is driven
+sition strategies, as implemented by TEMPO [11] via the separation
+                                                                         by the quest for models that are not only more resource-efficient
+of complex interactions into the trend, seasonal, and residual com-
+                                                                         but also adept at handling longer sequences through their inherent
+ponents, have been shown to enhance model efficacy substantially.
+                                                                         linear complexity. A notable embodiment is the RWKV-TS [42],
+    For spatial time series, the attention mechanism is utilized to
+                                                                         which leverages the RWKV [74], an RNN-type foundation model
+model both the spatial and temporal dependency. For instance, ST-
+                                                                         architecture, demonstrating promising potential for general time
+LLM [59] employs a novel partially frozen attention strategy for
+                                                                         series analysis. This emerging trend presents a valuable opportunity
+traffic prediction, leveraging spatial-temporal embeddings to cap-
+                                                                         for time series research and applications.
+ture the intricate dynamics of traffic data across space and time.
+Conversely, other studies opt for independent modeling of spa-           5.1.3 Diffusion-based Models. Diffusion-based foundation mod-
+tial and temporal relationships. TFM [91] is a case in point, which      els have gained prominence in CV [73, 81] and video [8] due to
+employs attention mechanisms within a dynamic graph encoder              their proficiency in learning complex data distributions, yet their
+
+predict future states by capturing temporal dynamics, generating             Figure 5: Illustration of different adaptation techniques.
+smooth transitions from current to potential future states [79, 95].       and utilize the self-supervision signals by generating informative
+Applied to spatial time series, they extend this capability to model       positive pairs as well as filtering out unsuitable negative pairs when
+spatial correlations alongside temporal ones, providing insights           performing augmentation [62]. In addition to the aforementioned
+into the interplay between space and time, particularly beneficial         two self-supervised strategies, the efficacy of the hybrid variant
+in fields like traffic forecasting [96].                                   has also been validated, where the pre-trained model on fewer time
+                                                                           series data outperforms the supervised counterpart [46].
+5.2     Pipeline                                                              In general, self-supervised pre-training enables foundation mod-
+In this part, we review TSFMs from the pipeline perspective, in-           els to exploit the vast amounts of unlabeled time series data, pro-
+cluding diverse model acquisition and adaptation mechanisms.               viding generic temporal knowledge that can be further fine-tuned
+                                                                           for specific downstream tasks. Compared with fully-supervised
+5.2.1 Pre-training. Pre-training is an initial and crucial step for        pre-training, it provides a more generic and realistic solution for
+building TSFMs, since the knowledge learned in this phase enables          the acquisition of a time series foundation model.
+the models to generalize across different contexts and quickly adapt          Note that the aforementioned pre-training methods typically
+to various downstream tasks with minimal adaptations. On the               build the model from scratch and obtain the universal knowledge
+other hand, the diverse nature of pre-training data (e.g., standard        from data with the same modality (i.e., time series). Nevertheless,
+time series, spatial time series, and trajectories), as well as the way    recent advancements in time series research have heightened the
+the data is used, lead to a wide spectrum of pre-training mechanisms       usage of LLMs [11, 12, 20, 38, 40, 50, 59, 63, 64, 84, 90, 103–105, 111,
+when building and deploying foundation model. In this survey, we           121], VLMs [99], and AMs [107] that are pre-trained from other data
+propose a new perspective mostly based on learning objectives in           modalities (text sequence, image-text sequence, acoustic signals).
+the pre-training phase, to categorize existing methods for TSFMs.
+These mechanisms include fully-supervised, self-supervised (gener-         5.2.2 Adaptation. The adaptation phase tailors the TSFM to spe-
+ative, contrastive, hybrid of generative and contrastive), and others.     cific tasks or datasets, enhancing its performance on those tasks by
+   Fully-supervised pre-training refers to the strategy where the          leveraging the learned generic temporal knowledge. We partition
+foundation model is initially trained on one or multiple large time se-    existing methods into four main branches, including direct usage,
+ries datasets with labels to capture the complex temporal dynamics         fine-tuning, prompt engineering, and time series tokenization.
+and learn generalizable representations. TTMs [33] proposes a uni-             Direct usage (also called zero-shot), means no further fine-tuning
+versal time series foundation model supervised framework that is           on the target datasets, suggesting the sufficient capability of a
+able to handle the heterogeneity of multiple time series datasets and      pre-trained model for downstream tasks. It can also indicate the
+effectively build the forecasting capability during pre-training, via      homogeneity between the pre-trained dataset and target dataset,
+the design of multi-resolution enhancements (e.g., adaptive patch-         especially for some real-world applications where a foundation
+ing, data augmentation via downsampling, etc.) Fully-supervised            model is built to fulfill domain-specific tasks [5, 14].
+pre-training for TSFMs is particularly suited for scenarios where              Fine-tuning is a common strategy to adapt foundation models to
+there is sufficient labeled historical data. Moreover, this pre-training   target tasks. Based on the way the foundation model is used on the
+technique is more frequently used in some domain-specific applica-         target dataset, there are three mainstream works: fine-tuning the
+tions such as transportation [31, 91] and climate [4, 72], where the       whole model [66, 69, 72] or specific components (e.g., training posi-
+model can be directly tailored for downstream forecasting tasks            tional embeddings and layer normalization, while keeping feedfor-
+with the ease of minimal adaptations.                                      ward and attention layers frozen when fine-tuning LLMs) [12, 121],
+   We categorize the generative pre-training strategy as a general         to directly infer results, or integrate foundation models as part of
+modeling of time series representations, including reconstruction          the whole model [20, 54, 86, 105].
+and probabilistic modeling of time series inputs. In reconstruction-           Prompt engineering is more specialized in LLM-based TSFMs.
+based pre-training, an effective learning objective is to recover the      The prompt can be handcrafted with task-specific textual input and
+original input space via masked autoencoding strategies [15, 82]. In       directly used to query the output for downstream prediction [90,
+the probabilistic modeling methods, the latent representation space        104] or intermediate embedding as feature enhancement [105]. Be-
+formed from temporal or spatial-temporal encoders is optimized to-         sides, the prompt can also be parameterized vectors and end-to-end
+ward an estimated density via maximizing log-likelihood, based on          learnable when optimizing the model on target datasets [11, 86]. In
+which the forecasts can be sampled [79, 96]. Moreover, it is also ben-     comparison to static prompts, the use of trainable prompts enhances
+eficial to leverage contrastive learning to enhance the robustness of      the ability of LLMs to comprehend and match the context of given
+pre-training time series foundation models. The key is to construct        time series inputs. For example, TEMPO [11] constructs a trainable
+
+
+prompt pool with distinct key-value pairs, and retrieves the most         to quired text token embeddings as prompts, which further en-
+representative prompt candidates with the highest similarity scores.      hances the embedding space and informs the LLM to comprehend
+   Time series tokenization aims to effectively represent the time        the task contexts. As such, utilizing multi-modal data facilitates the
+series as embeddings, which is also more frequently adopted in            repurpose of the existing LLM into time series forecasters without
+transformer-based architectures [11, 50, 70]. Common tokeniza-            additional computational costs.
+tion techniques include reversible instance normalization [52] that
+mitigates distribution shift, patching with channel independence          6    FUTURE DIRECTION
+strategy that effectively and efficiently extracts the time series con-   In this section, we discuss the future research directions and oppor-
+text [70], as well as the joint usage of time series decomposition        tunities of TSFMs from the methodology perspective.
+to explicitly represent explainable components [11] for the ease of           Incooporating Multi-modalities. As illustrated in this sur-
+subsequent temporal modeling.                                             vey, a majority of current foundation models for time series are
+   In addition to the main branches of adapting TSFMs, it is also         developed based on a single modality. However, many real-world
+worth noting that some fine-tuning strategies take real-world con-        dynamic systems are coupled with various modalities (time series,
+straints into account. For example, the fine-tuning is performed in       text, even image data). It would be a promising direction to leverage
+a privacy-preserved manner [15, 17].                                      various modalities along with the time series in TSFM to learn more
+                                                                          comprehensive and generalized knowledge, therefore significantly
+5.3    Modality                                                           boosting the performance of different downstream tasks.
+During the pre-training and adaptation of TSFMs, existing methods             Exploring more Efficient Architectures. Currently, the Trans-
+involve either single or multiple data modalities, where standard         former serves as the dominant architecture for building the foun-
+time series data, trajectory data, raster data, and text data can be      dation model. Though promising, Transformer-based foundation
+treated as different forms with unique domain perspectives. In this       models have quadratic scaling with respect to the sequence length
+subsection, we review the data modalities that are used in existing       due to their self-attention mechanism. This makes them compu-
+TSFMs across different domains.                                           tationally expensive and memory-intensive for processing long
+                                                                          sequences. Therefore, it is an interesting avenue for future study
+5.3.1 Single-modality. A majority of current TSFMs are constructed        to explore more efficient FM backbone architectures, such as state-
+and tailored on the basis of single-modal data. Compared with             space models Mamba [39].
+multi-modal methods, the single-modal time series modeling strat-             Developing more Effective Pipelines. Time series data has
+egy gains the advantages of inherent simplicity and bypasses the          unique properties such as temporal distribution shift [30, 94, 122]
+challenges of handling modality gaps, yet frequently demonstrates         (i.e., the data distribution will evolve over time) and causality (i.e.,
+excellent empirical results across a wide range of real-world appli-      casual relationship can exist between different points in the time
+cations, such as traffic [59, 82] and climate forecasting [14, 69].       series) [102]. Therefore, it would be another existing as well as
+                                                                          challenging future direction to develop TSFMs that can well address
+5.3.2 Multi-modality. However, the single-modal methods may               the temporal distribution shift or have a powerful Interpretability
+not encapsulate the full picture for several challenging downstream       for downstream tasks.
+tasks in finance [20, 111] and healthcare domains [54, 63]. To cope           Protecting Privacy. Protecting privacy is an essential concern
+with this issue, there have been initiatives towards developing           when training foundation models on diverse sources and modali-
+multi-modal, task-oriented foundation models, where additional            ties of data, which raises potential risks of exposing sensitive in-
+information provides useful information to enhance the model ca-          formation. As such, one future direction is the development of
+pability. In Chen et al., an external ChatGPT is queried to construct     robust privacy-preserving techniques for training the TSFM from
+an evolving graph structure representing companies, based on the          multi-source datasets, as well as keeping the utility of the trained
+analysis of news headlines at specific time steps. As such, the in-       FMs. This may include the advancement of federated learning ap-
+ferred graph and stock prices are fed into the time series model          proaches, where models can be trained across multiple decentral-
+(that uses GNN and LSTM for information propagation) to generate          ized devices or servers without exchanging raw data.
+stock price movement predictions. Another example in healthcare
+also demonstrated the effectiveness of multi-modal medical context        7    CONCLUSION
+modeling, which aligns the embedding of ECG (Electrocardiogram)           The rapid development of AI foundation models has revolution-
+and corresponding medical text reports under a self-supervised            ized the research fields in different domains. In this survey, we
+contrastive learning framework and performs ECG classification.           provide a comprehensive and updated review of foundation models
+In general multi-modal time series analysis, similar cross-modality       specifically designed for time series analysis. A novel taxonomy
+alignment strategies (e.g., contrastive learning [86], reprogram-         is proposed from a methodology-centric perspective by classify-
+ming [50], token-wise prompting [64]) are adopted, where the              ing FMs based on key components including model architecture,
+multi-modal inputs are often the textual description of datasets          pre-training technique, adaptation technique, and data modality.
+and pre-training word embedding from LLMs. As a notable exam-             Our survey facilitates understanding the underlying mechanism
+ple, Time-LLM [50] introduces a reprogramming framework that              of applying the foundation models to time series. Furthermore, we
+aligns the language knowledge from pre-trained word embedding             believe that the consolidation of the latest advancements, as well as
+and time series information via linear projection and multi-head          the potential future direction, can inspire more innovative works
+attention, where the handcrafted dataset descriptions are also used       within the field of time series analysis.

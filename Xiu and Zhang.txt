@@ -1,0 +1,200 @@
+Abstract—According to multivariate chaotic time series                the NARX neural network multi step input and output delay, it
+prediction problem, this paper establishes a multivariate chaotic     can reflect the historical status of the information system. So
+time series forecasting model with nature structure import data       the network has the memory function, and it has good
+based on NARX neural network. The simulation research of              nonlinear mapping ability, robustness and adaptability. It can
+Lorenz chaotic time series proves that the forecasting precision of   better describe the characteristics of chaotic time series system.
+multivariate chaotic time series forecasting model with nature
+structure import data is much higher than using unvaried chaotic          At present, the prediction of chaotic time series is mainly
+time series. And found the NARX neural network has strong             based on single variable time series prediction and multivariate
+nonlinear mapping ability than others. In comparison with other       time series prediction. Most of that single variable chaotic time
+algorithms, the NARX modeling with nature structure import            series for time series obtained in practice for finite length and
+data method can make better predicting performance, thus it can       noise, although the Taken 's embedding theory of phase space
+be widely used in multivariate chaotic time series prediction.        reconstruction of the original system got more information, but
+                                                                      its prediction effect is not better than the effect of prediction of
+Keywords-narx neural networks; chaotic time series; univariate;       multivariate chaotic time series. This is due to the fact that the
+multivariate; prediction                                              complex system is usually described by several variables, and
+                                                                      more dynamic information can be obtained by using
+                       I.    INTRODUCTION                             multivariate time series modeling. In many studies, the
+                                                                      multivariate time series data through phase space
+    Chaotic time series forecasting methods and models is a hot
+                                                                      reconstruction or other methods of input data for the
+research field in recent years, involves many subjects, is widely
+                                                                      conversion. But this paper thinks that the chaotic time series
+used in many fields. It has been widely applied in the wind
+                                                                      data’s number is enough and no noise. By using its natural
+speed forecasting, hydrological forecast, the movement
+                                                                      structure as the input of the model, the structure can better
+accuracy of CNC machine tools forecast, wind power
+                                                                      reflect the original chaotic system. So the paper directly uses
+prediction and forecasting of financial [1-6]. So far, domestic
+                                                                      the natural structure of the multivariate time series of chaotic
+and foreign scholars have done a lot of researches on chaotic
+                                                                      system for modeling, and using the NARX neural network's
+prediction theory. They have obtained some valuable results by
+                                                                      powerful approximation fitting ability of multivariate chaotic
+neural network, support vector machine prediction research,
+                                                                      time series prediction model of NARX neural network, in order
+and the extreme learning machine model [7-11].
+                                                                      to obtain better prediction effect.
+    Among them, the neural network model has been widely
+used in the prediction of chaotic time series. Neural network is             II.   INTRODUCTION OF NARX NEURAL NETWORK
+divided into static neural network and dynamic neural network.
+Static neural networks are commonly used in BP and RBF                    NARX neural network is a nonlinear Auto-Regressive
+neural network, the network does not have the feedback and            model with Exogenous Inputs [12]. A typical NARX regression
+memory function, such that the network in the training or             neural network consists of input layer, hidden layer and output
+simulation that the current output is only related to the current     layer and the input and output delay, to determine the input and
+input, has nothing to do with the past input and output. Due to       output delay order number, the number of hidden layer neurons
+the lack of feedback function and memory function, the                prior before application. The schematic diagram of the network
+generalization ability of the network is low, which is not            structure is shown in Figure I:
+suitable for chaotic time series prediction. Compared with
+static neural network, dynamic neural network is more suitable
+for chaotic systems. The characteristics of chaotic time series is
+the input and output of the past is closely associated with the
+current output, while the dynamic neural network with
+feedback and memory function, so the use of dynamic neural
+network prediction often can get more accurate results. NARX
+regression neural network is the most widely used dynamic
+nonlinear neural network. Its performance is generally better
+than the full regression neural network. Due to the inclusion of
+                                                                             
+
+
+
+
+    In Figure I, the parameters of d is order delay; the m is the                                                     IV.    SIMULATION STUDY
+number of neurons in the hidden layer; the w is the input vector
+of the network and the feedback vector weight matrix; the b is                                   A. Preparation of Chaotic Time Series Data
+bias; the f1 is neural network hidden layer activation function                                      In this paper, the classical chaotic time series Lorenz
+with the tansig function; the f2 is the neural network output                                    attractor is simulated to verify the validity of the proposed
+layer activation function, using purelin transfer function.                                      method. The Lorenz chaotic time series is defined as follows:
+    The NARX neural network model is established by                                                    Lorenz attractor equation
+introducing the time delay module and the output feedback to
+establish the dynamic recurrent network. In the process of
+training, verification and testing, the input of the network                                                                x   ( y  x),
+model includes not only the original input data, but also the                                                                y  rx  xz  y,
+output data after training. Then the generalization ability of the
+network is improved.                                                                                                       z  xy  bz                      
+   The mathematical model of NARX neural network can be
+expressed as:                                                                                        Among them, the parameter values is set to ,
+                                                                                                 r=45.92, b=4.0, and integral step h=0.01. Using the four order
+                                                                                                 Runge-Kutta method solves integral equations. Given the initial
+    y(t )  f [ y(t  1), y(t  2),, y(t  ny ), u (t  1), u (t  2),, u (t  nu )]
+                                                                                           value (-1, 0, 1) iteration produces a length of 32100 bit Lorenz
+                                                                                                 chaotic system. In order to make the research of representative,
+    The function f   represents the nonlinear function of                                     we remove the time-series data in the initial position to the
+                                                                                                 front part of the transient chaos, generating 2100 data points as
+neural network. It can be seen that the output data can be used                                  the research sample, the first 2000 data as training set, 100 data
+as input in the feedback function and improve the accuracy of                                    as the test data set, as shown in Figure II.
+the neural network through open cycle training or closed loop
+training.
+    In order to achieve the desired results, it is necessary to
+select the parameters of the NARX neural network model. The
+function f   of the equations (1) can be trained and studied
+by the network, which depends on the number of neurons in the
+hidden layer. If the input layer data through multiple simple
+neurons of hidden layer, the output value is close to the given
+expected value, and the prediction error autocorrelation and
+input errors associated with the error map in a reasonable range
+by training NARX neural network, the applicability of NARX
+neural network model is better. If the error is large, you need to
+modify the number of neurons and order of delay in the hidden
+layer, until the output value and the expected value of the error
+is in the acceptable range. Therefore, the number of neurons                                         FIGURE II. LORENZ CHAOTIC TIME SERIES ORIGIN DATA GRAPH
+and the number of delay orders need to be tested repeatedly to
+determine.
+                                                                                                 B. Multivariate Chaotic Time Series Prediction Experiment
+               III. MODEL EVALUATION CRITERIA                                                        In this paper, Matlab neural network ntstool box is used to
+                                                                                                 build and train the NARX neural network. The input data for
+    In this paper, we use the root mean square error (RMSE) to                                   the Lorenz chaotic time series is x(t), y(t) and z(t). And the
+measure the prediction error. The root mean square error is a                                    output data is x(t+1). In order to determine the parameters of
+method to describe the system error, which can be used to                                        the NARX neural network model of neurons in the hidden layer
+measure the deviation between the predicted data and the target                                  and the number of delay order, using the expert experience
+data. Standard root mean square error (RMSE) is as follows:                                      method and trial method to determine the time delay, found
+                                                                                                 that the delay order is 6, the number of hidden layer neurons is
+                                                                                                 set to 20, the training get good effect.
+                                       y              y predict ,i 
+                                       n
+                                                                          2
+                                             true ,i                                                 Then the NARX neural network is trained to predict the
+                       RMSE          i 1
+                                                                                                 future 100 step by the rolling extrapolation method, and the
+                                                      n                                    results are shown in Figure III. From Figure III we can see, the
+                                                                                                 100 step forecasting Lorenz chaotic time sequence curves and
+   In the formula, ytrue,i is the actual value, ypredict,i is the                                the actual values are in good agreement, the prediction error
+predicted value, and n is the number of test samples.                                            curve also shows that the maximum prediction error of the
+                                                                                                 prediction is only 0.001, indicating high prediction accuracy of
+                                                                                                 the model.
+
+
+
+
+                                                                                                                                                              165
+                                             Advances in Engineering Research, volume 86
+
+
+
+
+                                                                     MKELM algorithm of reference [11] with the NARX
+                                                                     algorithm, we can see that the multivariate NARX neural
+                                                                     network prediction algorithm is better than that of MKELM
+                                                                     algorithm. A NARX neural network prediction algorithm is
+                                                                     more suitable chaotic time series than others.
+
+                                                                     TABLE I. ROOT MEAN SQUARE ERROR OF LORENZ CHAOTIC TIME
+                                                                                        SERIES PREDICTION
+
+                                                                                                                    Model
+                                                                             Model variable
+                                                                                                  NARX model                MKELM model
+                                                                             Multivariate         0.000295                      0.0312
+
+                                                                             Single variable      0.068                         0.0973
+   FIGURE III. LORENZ MULTIVARIATE CHAOTIC TIME SERIES
+                PREDICTION AND PREDICTION ERROR                                                  V.       CONCLUSIONS
+                                                                        In this paper, a prediction model of chaotic time series with
+C. Single Variable Chaotic Time Series Prediction                    natural multi variable structure is established by using
+    Experiment                                                       nonlinear autoregressive with exogenous inputs. It has good
+                                                                     prediction effect on the Lorenz chaotic time series rolling
+    Chaotic time series prediction experiment of single variable     prediction. Compared with the single variable prediction results
+and multivariate chaotic time series prediction experiment           of Lorenz chaotic time series, it is proved that the prediction
+platform is the same, only single variable chaotic time series       accuracy of multivariate chaotic time series is much higher
+prediction experimental input data construction and training of      than that of the single variable time series. Moreover, it is
+the NARX neural network for chaotic time series is Lorenz’ x(t)      found that the NARX neural network has strong nonlinear
+single variable data, and the output data is x(t+1). Compared        mapping ability, and has higher prediction accuracy than other
+with the experimental results of the multivariate chaotic time       algorithms.
+series prediction, the parameters are the same. The results of
+single variable of Lorenz chaotic time series prediction are
+shown in Figure IV.                                                                             ACKNOWLEDGMENT
+                                                                        This work has been supported by the General Project of
+                                                                     Humanities and Social Science Research of Education Ministry
+                                                                     (11YJCZH202).
+
+                                                                                                      REFERENCES
+                                                                     [1]   Yang Xueming, Bian Ji Fei, Zhu Xiaoxun, et al. “Study on Support
+                                                                           Vector Machine Based on support vector machine for short term wind
+                                                                           speed forecasting”. Journal of solar energy, 2016, 37 (2173-2179.): (in
+                                                                           Chinese)
+                                                                     [2]   Jiang Xiang Cheng. “Hydrological chaotic time series prediction based
+                                                                           on Volterra adaptive method”. mathematical statistics and management,
+                                                                           2015, 34 (): 434-441.
+                                                                     [3]   Du Liuqing, Yin Guofu, Yu Yongwei. “Predicting the motion precision
+                                                                           of NC machine tool chaotic phase space reconstruction”. Journal of
+                                                                           agricultural machinery, based on the 2015, 46 (10): 397-402.
+ FIGURE IV. LORENZ SINGLE VARIABLE CHAOTIC TIME SERIES               [4]   Wang Lan, Li Huaqiang, Wu Xing, et al. “A chaotic time series
+              PREDICTION AND PREDICTION ERROR                              prediction model for wind power based on improved local Volterra
+                                                                           adaptive filter ”. automation of electric power equipment, 2016, 36 ():
+                                                                           40-44.
+D. Prediction Result Analysis                                        [5]   Wang Shi, Yang Huaijiang, Dong Yan. “To predict the traffic chaos
+    It can be seen from Figure III that the Lorenz multivariate            theory based on LAN ”. Journal of Beijing Institute of Technology, 2016,
+chaotic time series has the absolute prediction error of the               36 (6): 616-619.
+maximum value of 0.000938 after the rolling extrapolation of         [6]   Yi Yi, Huang Xueli. “Supply chain performance evaluation based on
+                                                                           linear regression forecasting model of chaotic time series”. statistics and
+the 100 step. From Figure IV we can see that the Lorenz single             decision, 2015 (22): 44-46.
+variable chaotic time series after rolling 14 step extrapolation,    [7]   Zhang Hongli, Li Ruiguo, fan. “By Bernstein neural network prediction
+the absolute prediction error value has reached 0.00105, in the            of chaotic sequence of phase space reconstruction “. system simulation,
+100 step through rolling extrapolation, the absolute prediction            2016, 28 (4): 880-889.
+error to a maximum value of 2.4168. From Table I, we can see         [8]   Han Min, Xu Meiling, Ren Jie. “The state machine for multivariate
+the forecasting result of the Lorenz multivariate chaotic time             chaotic time series prediction model ”. Acta Automatica Sinica, 2014, 40
+series with the natural structure as the input of the model is             (5): 822-829.
+better than only the forecasting results using the single variable
+sequence. Comparison of the root mean square error of

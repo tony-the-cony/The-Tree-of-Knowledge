@@ -1,0 +1,152 @@
+
+                     Abstract. Chaotic systems are complex dynamical systems that play a very important role in
+                     the study of the atmosphere, aerospace engineering, finance, etc. To improve the accuracy of
+                     chaotic time series prediction, this study proposes a hybrid model CEEMDAN-LSTM which
+                     combines Complete Ensemble Empirical Mode Decomposition with Adaptive Noise
+                     (CEEMDAN) and long short-term memory (LSTM). In the model, the original time series is
+                     decomposed into several intrinsic mode functions (IMFs) and a residual component. To reduce
+                     the difficulty of predicting chaotic time series and provide a high level of predictive accuracy,
+                     the LSTM prediction model is built for all each characteristic series from CEEMDAN
+                     deposition. Finally, the final prediction results are obtained by combining all the prediction
+                     sequences. To test the effectiveness of this model we proposed, we examined the CEEMDAN-
+                     LSTM model using the Lorenz-63 system. Further compared to Autoregressive Integrated
+                     Moving Average (ARIMA ), Support Vector Regression (SVR), multilayer perceptron (MLP),
+                     and the single LSTM model, the results of the experiment show that the proposed model
+                     performs better in the prediction of chaotic time series. Besides, the hybrid model proposed in
+                     this paper has better results than the LSTM model alone. Therefore, hybrid models based on
+                     deep learning methods and signal decomposition methods have great potential in the field of
+                     chaotic time series prediction.
+
+
+
+1. Introduction
+The prediction of chaotic systems is one of the most important areas of research in recent years [1,2].
+The fundamental characteristic of chaotic systems is their extreme sensitivity to initial values, which
+determines the long-term unpredictability of changes in the system, making it impossible to predict
+chaotic time series over long periods [3]. However, the certainty of the chaotic system, i.e., the small
+degree of dispersion of the motion trajectory in the short term, determines its short-term predictability
+[4]. Currently, the prediction of chaotic systems is accomplished in two main ways. One is that over
+the years, many scientists have built models of mechanisms such as differential equations by analyzing
+the internal laws of natural systems and simplifying the main features of natural systems. This
+approach requires a large reserve of expert knowledge. Another approach to prediction is the machine
+learning approach based on data-driven, i.e. using historical data sets to build predictive models. In
+recent years, deep learning, as a new research direction in the field of machine learning, has gained
+significant advantages in different application areas [5-7]. Among the many deep learning models, the
+Recurrent Neural Networks (RNN) introduce the concept of time step length and show greater
+adaptability in the analysis of time-series data. Since recurrent neural networks (RNNs) tend to ignore
+
+
+long-term dependencies within time series and have problems such as gradient explosion, the Long
+short-term memory (LSTM) [8], a variant of RNNs, has emerged with a special memory structure and
+gate structure that enhances long-term dependent memory. Numerous studies show that Long short-
+term memory (LSTM) is an effective method for achieving a chaotic time series prediction [9-11].
+Therefore, this paper uses LSTM as a prediction algorithm to construct a chaotic time series prediction
+model.
+    In recent years, the “decomposition before reconstruction” framework has achieved good results in
+many forecasting areas, such as PM2.5 prediction, financial time series prediction, and long-term
+streamflow forecasting. Among the many data decomposition methods, the ensemble empirical mode
+decomposition (EEMD) inherits the advantages of EMD (empirical mode decomposition) and solves
+the problem of mode mixing of EMD, while complete ensemble empirical mode decomposition with
+adaptive noise (CEEMDAN) [12] further improves based on EEMD, not only overcoming the problem
+of low decomposition efficiency but also the reconstruction error is nearly zero, more suitable for the
+decomposition of nonlinear time series. Therefore, in this study, we chose CEEMDAN to decompose
+the time series.
+    Based on CEEMDAN and LSTM, this paper proposes a hybrid model, which first pre-processes
+the chaotic time series through CEEMDAN and then predicts its components through LSTM. The
+final forecast is obtained by integrating the component forecasts. We apply this model to predict the
+Lorenz-63 system and compare the predicted results with other predictive models. The experimental
+results show that the model proposed in this paper is significantly superior in chaotic time series
+prediction compared to other models.
+
+2. Proposed Method
+Previous studies have found that CEEMDAN has advantages in time series decomposition, while
+LSTM does well in the long time series prediction. Therefore, in this paper, we integrated these two
+methods and proposed a hybrid approach, so-called CEEMDAN-LSTM, for forecasting chaotic time-
+series prediction. The proposed CEEMDAN-LSTM includes three stages: decomposition, individual
+forecasting, and ensemble. In the first stage, we use the CEEMDAN method to decompose the original
+time series of the chaotic system into 𝑘 + 1 components, including 𝑘 IMF and a residual component.
+Of these components, some exhibit high-frequency characteristics while others exhibit low-frequency
+characteristics. In the second stage, we build a forecasting model for each component using long short-
+term memory (LSTM). Then we use the model built to make predictions for each component. So we
+ended up with predictions for different frequency components. In the third stage, we aggregate the
+forecast results of all components as the final result. Although there are many ways to aggregate the
+forecast results for all components, in this study we add up the forecast results for all components
+using equal weights. The flowchart of the CEEMDAN-LSTM is shown in Figure 1.
+
+
+
+3.Experiments and Results
+
+3.1 Datasets and Pre-process
+To measure and compare the forecasting performance of different models, the chaotic time series of
+the Lorenz-63 system is employed as the sample data set for the experiment. Lorenz-63 system
+described a model where fluid flows in a container whose top and bottom are cooled, then heated to
+create a temperature similar to the atmosphere. Specifically, Lorenz-63 system, which is a set of
+coupled ordinary differential equations with three components. The study of the Lorenz-
+63 system has important implications for the discovery and understanding of the characteristic
+properties of sensitivity to the initial condition for a deterministic system [13,14]. Therefore, the
+Lorenz-63 system has been extensively studied as an important prototype for studying the special
+properties of chaotic systems. We set the initial state of this chaotic system as x(0) =
+−0.2028, y(0) = ,3.5418, z(0) = 25.0873, the time step is 0.01, and the integration time length is 50,
+and we finally got 5000 sample data.
+
+3.2 Parameters Details
+Our implementation was based on the Tensorflow framework [15]. To prevent the problem of gradient
+explosion during training, we made the model training more robust by reducing the learning rate and
+increasing the number of batches. The process of model training is to minimize the loss function, so
+after defining the loss function, setting up a suitable optimizer to solve the parameter optimization
+problem is very important for experimental results. There are a great number of optimization
+algorithms to choose from in current deep learning libraries, such as Stochastic Gradient Descent
+(SGD), Adaptive Moment Estimation (Adam), and root mean square prop (RMSProp). The ideal
+optimizer can not only get the best model as fast as possible with the training samples but also prevent
+overfitting. To choose the best optimizer, we have carried out comparative experiments, which
+compared the mean squared error (MSE) loss of different optimizers when training the LSTM model.
+From comparative experiments, we found that the Adam method is the best. Adam has been widely
+used as an effective stochastic optimization method. Therefore, Adam optimizer is used in the process
+of training the model, which can converge to good results faster. The Rectified Linear Unit (ReLU)
+does not have any backpropagation error compared to the sigmoid function. And for larger neural
+networks, it is faster to build models based on ReLU. Therefore, when selecting the activation function
+in the experiment, we chose ReLU as the activation function. In this study, the input of LSTM is
+100 × 1 data. What's more, we applied dropout to the LSTM and set the dropout rate to 0.1 to
+prevent overfitting.
+
+3.3 Analysis of Experimental Results
+First, the CEEMDAN method is used to decompose the original chaotic time series. The amplitude
+and ensemble number of the added noise are 0.4 and 500, respectively. Figure 2 shows the IMFs and
+the residual(trend item) of the chaotic time series decomposed by CEEMDAN. The result contains 1
+original sequence, 12 IMF components, and 1 trend item.
+
+
+It can be seen that the original sequence of variable x in the Lorenz-63 system exhibits highly
+nonlinear and nonstationary, the fluctuating frequency of the IMF component is gradually reduced
+from IMF1 to IMF12. The left of the first line of Figure 2 displays the original chaotic time series of
+variable x in the Lorenz-63 system. First, the different LSTM prediction model was built for each of
+the 12 IMF components and one trend item respectively, and the forecast results for each component
+were obtained. Next, the forecast results for each component were summed with equal weights to
+produce the final forecast results for the original variable.
+    A prediction result for the lorenz-63 system made by the CEEMDAN-LSTM is shown in Figure 3.
+The black dash-dot curves are historical data. The red dots are predictions from the CEEMDAN-
+LSTM. The black curves are the true state value of the Lorenz-63 system. As can be seen from Figure
+3, based on the historical data of 2 units of Lyapunov time, we can predict the trajectory of about 4
+units of Lyapunov time [16-18] using the CEEMD-LSTM prediction model. In other words, with
+short-term historical information as input, the CEEMD-LSTM prediction model can predict the
+trajectory of chaotic dynamic systems over longer periods.
+
+
+
+   According to the specific statistical results, we can find that the model proposed in this paper has a
+smaller error in the prediction results and has obvious advantages over other models.
+
+4. Conclusions
+To improve the performance of predicting chaotic time series, a hybrid prediction model combining
+CEEMDAN and LSTM, called CEEMDAN-LSTM, is proposed in this paper. The method
+decomposes a complex chaotic time series into several components using the CEEMDAN method and
+then predicts each component separately using an LSTM-based prediction model. In the end, the sum
+of the predicted results of all the components is taken as the final forecast result. The results of the
+forecasting experiments on the Lorenz-63 system show that the proposed hybrid model outperforms
+the other forecasting models in the experiment. From the experimental results, we conclude that the
+“Decomposition and ensemble” framework can significantly improve the performance of chaotic time
+series prediction. Reasonable decomposition results can significantly improve the forecast
+performance, and the choice of CEEMDAN parameters has a significant impact on the forecast results.
+Therefore, in future studies, we will focus on how to select reasonable parameters efficiently during
+the time series decomposition process.

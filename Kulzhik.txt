@@ -1,0 +1,582 @@
+Abstract
+      This research deals with a problem of chaotic time series prediction. Using the
+concepts of non-predictable points, predictive clustering and motifs for time series
+prediction has shown impressive results in the prior research on this topic. This
+research introduces a new concept: base and auxiliary time series. Base time series is
+the one that is desired to predict, auxiliary time series is used for training the
+algorithm and is not being predicted. Also an auxiliary set has been introduced - a set
+of auxiliary series. As a result of the research, the optimal size of the auxiliary set
+has been estimated. Moreover, an introduction of the auxiliary set has shown that the
+percent of non-predictable points grows more slowly compared to an original
+algorithm and the error rate remains acceptable. Furthermore, the length of used time
+series was smaller and the results of predictions did not suffer.
+
+
+
+2. List of keywords
+      Auxiliary time series - a time series that is used purely for training of the
+algorithm, this time series is not predicted
+      Base time series - a time series that is used for training and is predicted
+      Chaotic time series - a time series obtained by observing certain state of a
+complex system
+      Horizon of predictability - an estimate of how many steps ahead a given
+time series can be forecasted
+      Motif - centroid of cluster obtained by clustering z-vectors
+      Pattern - a set of natural numbers of fixed length which corresponds to a
+pairwise distance of points sampled from the time series.
+      Set of possible predicted values - a set of values that algorithm suggests
+as a prediction at a given step. This set is used in order to obtain a unified
+predicted value.
+    Unified predicted value - a single value that is predicted at a given step.
+      Z-vector - a vector of values sampled from a time series that looks as
+follows: (𝑦𝑡, 𝑦𝑡+𝑘 , 𝑦𝑡+𝑘 +𝑘 , ..., 𝑦𝑡+𝑘 +𝑘 +...+𝑘 ), where 𝑘𝑖 are the elements of a
+
+predefined pattern.
+
+      Nowadays we live in a world that surrounds us with complex or dynamic
+systems. As a matter of fact we – humans – are a complex system either: numerous
+biochemical reactions in our body make up for these systems. It doesn’t require
+much effort to come up with countless examples of complex systems: weather
+conditions, social media, stock exchanges, road traffic, electricity consumption,
+pandemic outbreak and last but not least the human body. One of the essential
+characteristics of a dynamic system is that processes associated with it are tightly
+connected to chaotic time series [1]. Thus, the growth of popularity and prevalence
+of dynamic systems draws a lot of attention and academic interest to chaotic time
+series, their analysis, and development of methods of prediction of them. And if the
+problem of single-step prediction has been tackled and quite impressive results have
+been acquired by various researchers, the problem of multi-step prediction remains a
+challenge with just a few promising results. One of the main reasons for such a
+difference is the exponentially growing error of the prediction function depending on
+the number of steps. The further into the future one tries to make a prediction - the
+higher the probability of obtaining an erroneous result. Furthermore, the growth of
+the error has an exponential nature, which can be explained by Lyapunov instability
+[2]. In simple terms, Lyapunov instability can be formulated as follows: any initial
+difference between two close trajectories grows exponentially over time, with its
+exponent being equal to the highest Lyapunov exponent [3]. This means that if the
+prediction algorithm makes a slight mistake once, it would be carried over to
+subsequent predictions, leading to vague results. Before moving on it is important to
+introduce yet another concept from chaos theory which plays a tremendous role in
+this research. Horizon of predictability - or sometimes referred to as Lyapunov time -
+is an estimate which allows us to approximately understand how far in the future a
+given time series can be predicted, so that a prediction error would not exceed some
+
+
+       One of the approaches to deal with such behaviour is the employment of
+predictive clustering [4, 5]. Using motifs – sequences that are shown in the time
+series repeatedly – is the main idea behind this methodology. It is proposed that
+subsequent points in the given time series will also resemble a motif fairly well if a
+portion of the time series resembles it sufficiently. This makes it possible for us to
+forecast time series using motifs. The time series can be divided into subseries and
+then clustered to obtain motifs.
+       Another approach to dealing with time series that shows its efficiency is the
+employment of generalised z-vectors suggested by V.Gromov [6]. The core idea of
+this concept is that instead of taking a whole time series and splitting it into parts in
+order to obtain motifs another sampling technique is utilised. Each z-vector is
+constructed in accordance with a pattern 𝑘1, 𝑘2, ..., 𝑘𝐿−1. In this case a vector of
+
+time    series       corresponding        to     such   a   pattern   would   look    like
+(𝑦𝑡, 𝑦𝑡+𝑘 , 𝑦𝑡+𝑘 +𝑘 , ..., 𝑦𝑡+𝑘 +𝑘 +...+𝑘 ) for each possible 𝑡. This method would be
+discussed in greater details later in the paper.
+       Yet another technique which has improved the quality of prediction of chaotic
+time series is the concept of non-predictable points. Labelling certain points as
+non-predictable has shown a positive effect on the results [6]. Moreover, such an
+approach has an intuitive interpretation: it is often possible that it is not necessary to
+know every single value of the time series in the future. Moreover, by combining the
+concept of non-predictable points and the idea of motifs, which can be used for
+predictions, it becomes evident that a non-predictability of a given point does not
+imply the non-predictability of the consequent points. So it becomes possible to
+make predictions at points from 𝑡 to 𝑡 + ℎ, having some points labelled as
+non-predictable. More details about the identification of non-predictable points
+would be addressed later in the paper.
+      However, there is a certain aspect that should be kept in mind. The majority of
+the aforementioned methods were tested on synthetic data, when it is possible to
+generate a sample as large as desired. But when it comes to applying these methods
+of time series prediction to real data some difficulties might arise. It is sometimes
+possible that the length of the time series is not sufficient to construct sensible or
+meaningful motifs. For instance, when dealing with the interest rate of some country:
+if one considers the interest rate in the US, it would make sense to take into account
+values from the 1960s up to present time, which would total in around 60
+observations.
+      So this research would try to solve this problem by introducing a novel idea. It
+would focus on the impact of the extension of the original training set with auxiliary
+time series. Given a “base” time series - the one that it is desired to predict, its data is
+mixed with auxiliary time series with similar nature which are used for inference.
+Referring to an aforementioned example, given the data on interest rate in the US
+from the 1960s, we add data on interest rate in other countries, like Canada, UK,
+France, Germany, Switzerland, in order to predict the future values of the interest
+rate in the US.
+       When applying this approach it should be kept in mind that the length of time
+series is not sufficiently large. As it was discussed earlier, the length of time series
+plays an important role for the quality of the algorithm’s predictions. The shorter the
+time series - the harder it is to obtain significant clusters, from which motifs are
+obtained. This approach suggests that the clusters would consist of sampled parts of
+different time series. Thus it would increase the number of significant clusters and
+possibly increase the quality of prediction. The goal of this research is to estimate
+the impact of introduction of auxiliary time series on the quality of predictions.
+
+
+4. Problem statement
+
+           Mathematically, the chaotic time series prediction in the mentioned setting can
+be formulated as follows. The base time series 𝑌𝑡 = {𝑦0, 𝑦1, ..., 𝑦𝐿} is split into
+                                                 𝑡𝑟𝑎𝑖𝑛
+two        parts:        train       set   -    𝑌𝑡        = {𝑦0, 𝑦1, .., 𝑦𝑡 }        -      and     test      set     -
+                                                                              1
+
+    𝑡𝑒𝑠𝑡
+𝑌𝑡         = {𝑦𝑡 +1, 𝑦𝑡 +2, ..., 𝑦𝐿} . The auxiliary train test is obtained as follows:
+                    1           1
+
+
+
+consider a set of auxiliary train time series 𝐴 = {𝐴0, 𝐴1, ..., 𝐴𝑁}. Then, the final
+
+train        set         is         completed        by    merging         two       sets         together,         i.e.
+                        𝑡𝑟𝑎𝑖𝑛
+𝑇𝑟𝑎𝑖𝑛 = {𝑌𝑡                   , 𝐴0, 𝐴1, ..., 𝐴𝑁}. The test set remains unaltered, namely
+
+𝑇𝑒𝑠𝑡 = {𝑦𝑡 +1, 𝑦𝑡 +2, ..., 𝑦𝐿}. When the algorithm is being trained, it has no access
+                    1           1
+
+
+to the test set.                Then the prediction pipeline can be split into two subproblems.
+The first subproblem is to obtain a set of possible predicted values for each point
+from 𝑇𝑒𝑠𝑡. Then, the second subproblem is to map a set of possible predicted values
+into a unified predicted value. Each unified predicted value is then compared to
+ground truth values with the goal of minimising the difference between them. So, the
+mathematical problem statement of this research is the minimisation of error
+
+                                                                1                     ^
+function which is defined as follows: 𝐿1 =                    |𝑇𝑒𝑠𝑡|
+                                                                          ∑       ||𝑔(𝑆𝑡+ℎ) − 𝑦𝑡+ℎ|| , where
+                                                                       𝑡+ℎ∈𝑇𝑒𝑠𝑡
+^
+𝑆𝑡+ℎ is the set of possible predicted values, 𝑔(𝑥) is the mapping from a set of
+
+possible predicted values into a unified predicted value and 𝑦𝑡+ℎ is the ground truth
+
+value. But the introduction of a new concept - the non-predictable points - modifies
+                                                                                                      ^
+the problem statement of the research. Let’s denote a function φ = φ(𝑆𝑡+ℎ) which
+
+returns 1 if a point with index 𝑡 + ℎ is predictable and 0 otherwise. Reformulated
+
+
+problem statement suggests that the prediction of time series turns into two sub
+problem optimisation:
+
+         1                   ^           ^
+𝐿1 =   |𝑇𝑒𝑠𝑡|
+                   ∑       φ(𝑆𝑡+ℎ) · ||𝑔(𝑆𝑡+ℎ) − 𝑦𝑡+ℎ||
+                𝑡+ℎ∈𝑇𝑒𝑠𝑡
+
+                                 ^
+𝐿2 =       ∑      (1 − φ(𝑆𝑡+ℎ))
+       𝑡+ℎ∈𝑇𝑒𝑠𝑡
+
+Both functions are iterated over the test set. The minimisation of the first function is
+equivalent to the minimisation of prediction error among the predictable points and
+the minimisation of the second function is equivalent to the minimisation of the
+number of non-predictable points.
+
+
+5. Literature review
+       In the academic sphere the topic of chaotic time series has been addressed
+quite a few times. When analysing the results of prior research it is important to
+distinguish between two major approaches that are the most popular when dealing
+with the given problem. The first class of solutions revolves around
+single-step-ahead prediction. There are two subclasses of solutions. The first
+subclass can be informally called recursive or recursive [7]. It suggests that in order
+to make an h-step-ahead prediction, ℎ > 1, it is necessary to predict intermediate
+points and use them to make the final prediction. Another subclass of solutions can
+be informally called direct [8]. In this case one is not bothered with predicting
+intermediate points but focuses on predicting a single point h-steps-ahead. When
+using the first subclass of solutions - recursive - it is important to keep in mind that
+in order to obtain substantial results it is necessary not only to make a satisfactory
+single value prediction, but also be able to accurately “merge” the resulting
+predictions into a chain of interconnected estimates. As for single-step-ahead
+prediction, various machine learning techniques were employed: classical neural
+networks [9], LSTM neural networks [10], linear regression and its variations and
+
+modifications [11]. The second subclass may be considered to be more versatile as it
+can be applied to various prediction horizons.
+      The second class of solutions refrains from making a single-step-ahead and
+suggests making multiple-input and multiple-output (MIMO) predictions [12, 13]. In
+this scenario, an array of consequent observations are passed into the model and an
+array of consequent estimates is produced.
+      One more approach that has been suggested by Canady et al., Sangiorgio et al.
+and Pathak et al. utilises reservoir computing in order to predict chaotic time series
+[14-16]. Their research reveals that even though reservoir computing performs well
+on the few-steps-ahead predictions it fails to retain its performance on larger
+horizons.
+      One of the main obstacles that arises with the use of the aforementioned
+approaches is the cumulative prediction error which yields an exponentially growing
+error rate in the long run.
+      On the contrary, a research presented by Baranov and Gromov [6]
+demonstrates quite promising results. By combining predictive clustering,
+generalised z-vectors and the novel concept of non-predictable points it was shown
+that even though the number of non-predictable points grows exponentially with the
+growth of the prediction horizon, the average prediction error remains within
+acceptable boundaries. This research introduces a modification of the algorithm
+suggested by Baranov and Gromov and analyses the impact of the modification on
+the overall quality of predictions.
+
+
+6.1 Lorenz Series
+      In this research Lorenz time series would be used as the chaotic time series, as
+it can be regarded as a universal benchmark for time series prediction problems.
+Note that Lorenz time series means the time series obtained by numerical solution of
+Lorenz attractor.      The following system of differential equations generates the
+aforementioned attractor:
+
+
+In this notation 𝑥, 𝑦, 𝑧 are the states of the system, σ, β, ρ are the parameters of the
+system and 𝑡 is time. By applying Runge-Kutta fourth order method with integration
+step ∆ = 0. 1 it is possible to obtain a numerical solution of the given system. Our
+research suggests using the numerical solution of 𝑥 as the Lorenz series. The
+numerical method of solving the system of DE allows to create a series of values of
+arbitrary length. The parameters σ = 10 and β = 8/3 are predefined and would be
+constant throughout the research. However, parameter ρ would be altered. As for the
+base time series - the one it it desired to predict - the value of ρ would be equal to 28,
+as it corresponds to a time series of chaotic nature. For simplicity, let’s denote the set
+of parameters of Lorenz attractor’s system by 𝑃 = {σ, β, ρ}. Using this notation,
+                                     8
+the set 𝑃0 = {σ = 10, β =            3
+                                         , ρ0 = 28} corresponds to a set of parameters of the
+
+base time series. In order to create auxiliary time series parameter ρ would be
+altered.
+        Gilmore et al. presented various critical values of ρ surpassing which the
+behaviour of the numerical solution of Lorenz’s attractor changes its behaviour [17].
+According to Gilmore, values of ρ > 24, 74 yield chaotic time series, which
+suffices our conditions and problem statement. In order to make sure that the
+condition that a time series is chaotic holds, an entropy-complexity plane can be
+used [18]. This method calculates two quantities for a given time series: entropy and
+complexity. Then, these quantities can be put on the entropy-complexity plane in
+order to classify a given time series, according to a region in which the point falls.
+
+In our research we empirically found boundaries for parameter ρ so that all Lorenz
+series can be classified as chaotic. Within these boundaries an auxiliary set of
+arbitrary size may be created, with necessary conditions of classes of time series
+held.
+
+
+Figure 6.3 shows how even a small change in the value of parameter ρ may alter the
+behaviour of a Lorenz series.
+      Now that a theoretical background of the data is clearly defined a following
+conclusion may be made. For Lorenz series one may estimate the horizon of
+                                                        4          −4
+predictability. Given that ε(0) = ∆ · 𝑡                     = 10        , ε𝑚𝑎𝑥 = 0. 2 and λ ≈ 0. 92
+
+                                                                    1 𝑙𝑛(ε𝑚𝑎𝑥)
+our estimate of horizon of predictability is 𝑇 ~                    λ   ε(0)
+                                                                                  ~ 7. 5 which translates
+
+into 75 integration steps. This means that predicting Lorenz series further than 75
+steps ahead of the last observation is equivalent to predicting after the horizon of
+predictability.
+Overall, it has been decided to generate base time series, with parameters 𝑃0
+
+of length 11000 (10000 for training the algorithm and 1000 for test) and up to 18
+auxiliary time series of the same length. However, as for the auxiliary time series,
+observation from 𝑡0 = 5000 up to 𝑡1 = 10000 would be used for training.
+
+6.2 Data sampling
+      As it has been mentioned earlier, the importance of sampling technique has
+been shown in the research by Gromov and Borisenko [6]. This research would also
+use this approach. The main idea is as follows. Consider a pattern of size 𝐿 − 1:
+{𝑘1, 𝑘2, ..., 𝑘𝐿−1}, 𝑘𝑖 ∈ ℕ. Each 𝑘𝑖 represents a distance from an initial point of the
+
+series to the next one. To make it more clear, suppose our pattern is of size 3 and
+𝑝𝑎𝑡 = {2, 3, 2}. By sliding this pattern across the time series we would sample out
+the following observations: at first iteration we would have 𝑣0 = {𝑦0, 𝑦2, 𝑦5, 𝑦7},
+
+at second 𝑣1 = {𝑦1, 𝑦3, 𝑦8, 𝑦10} and so on. Using notation introduced by Gromov
+
+and Borisenko vectors 𝑣0, 𝑣1, ... are called z-vectors. It becomes evident that for
+
+each pattern various sets of z-vectors would be obtained even though the same time
+series is sampled. The obtained sets of z-vectors would be passed further into the
+clustering algorithm. However, it should also be mentioned that this variability is
+crucial as it provides more flexibility for the construction of a set of possible
+predicted values. In order to save computational resources and time, it would make
+sense to introduce a new parameter that would limit the number of patterns that can
+be created - 𝐾𝑚𝑎𝑥. It would make sense that 𝑑𝑖 < 𝐾𝑚𝑎𝑥 for any pattern. This way,
+
+we create an upper bound on the distance between observations in order not to
+consider observations that are too far from each other and such patterns practically
+make no sense. At this point of the research it is suggested to use patterns of size
+𝐿 − 1 = 3, which results in 4 sampled points per slide, and 𝐾𝑚𝑎𝑥 = 10. It means
+                            𝐿−1
+that in total we can obtain 𝐾   𝑚𝑎𝑥
+                                      = 1000 patterns.
+
+7. Algorithms
+
+7.1 Clustering algorithm
+      Clustering plays a crucial role in this research as it allows to formulate motifs
+which would be used to obtain a set of possible predicted values. According to prior
+research on the topic, Wishart clustering algorithm shows the highest performance in
+the given setting [19]. The main advantage of Wishart clustering is that it does not
+require a priori knowledge of the number of clusters. Indeed, by looking at time
+series of an arbitrary length it is impossible to guess how many clusters would
+appear after sampling it. Moreover, remembering the fact that different patterns yield
+different z-vectors the problem gets even more difficult. If for a certain pattern we
+somehow managed to define the number of clusters it is not guaranteed that for any
+other pattern this number would be the same. In this research a modified version of
+Wishart clustering would be used, which has been suggested by Lapko and Chentsov
+[20]. The pseudocode of the clustering algorithm is provided in the appendix.
+This implementation uses graph theory concepts and utilises a proximity graph
+𝐺 = (𝑍𝑛, 𝑈𝑛), where 𝑍𝑛 is the set of vertices - samples that are being clustered and
+
+𝑈𝑛 - is the set edges, such that 𝑈𝑛 = {𝑑(𝑥𝑖, 𝑥𝑗) ≤ 𝑑𝑟(𝑥𝑖)}, where 𝑑(𝑥, 𝑦) is the
+
+distance between two samples and 𝑑𝑟(𝑥) is the radius of minimum-sized
+
+hypersphere placed at 𝑥 such that it contains at least 𝑟 observations. Furthermore, a
+                                                                                  𝑟
+significance of a point 𝑥 may be formulated in a following manner 𝑝(𝑥) =        𝑉𝑟(𝑥)
+                                                                                        𝑛
+
+ , where 𝑉𝑟(𝑥) is the radius of the aforementioned sphere. Also, a concept of
+
+height-significance cluster may be introduced. A cluster 𝑐 is said to be
+height-significant if 𝑚𝑎𝑥𝑥 , 𝑥     ∈𝑐
+                                        {|𝑝(𝑥𝑖) − 𝑝(𝑥𝑗)| ≥ µ}.
+                           𝑖   𝑗
+In summary, the Wishart clustering algorithm has two parameters that need to
+be adjusted for specific data: 𝑟 and µ. After conducting a number of computational
+experiments, optimal values for clustering algorithm have been obtained and they are
+equal to 10 and 0.2 respectively.
+       After we obtain clusters of z-vectors we need to extract the motifs from the
+clusters. There exists a couple of approaches to doing so, however taking the
+centroid of the clusters yields a high performance and is not computationally
+expensive. The centroid of the cluster is simply a mean of values of the z-vector at
+each point of time that corresponds to a given pattern. A simple visualisation on
+figure 7.1 gives a good understanding of this idea.
+
+
+       As a result of this procedure we have a set of motifs that correspond to a given
+pattern. These pairs - a pattern and a set of motifs corresponding to it - would be
+later passed into the prediction algorithm.
+       In the context of the auxiliary set an important remark should be made. All the
+time series from the auxiliary set are sampled and clustered independently of each
+other. Then, the obtained motifs are concatenated with the ones obtained for base
+series and the modified pairs of patterns and corresponding motifs are passed into
+the prediction function.
+
+7.2 Prediction algorithm
+         The prediction algorithm used in this research is based on the set of possible
+                         ^
+predicted values - 𝑆𝑡+ℎ. This set can be obtained by running the following procedure.
+
+First, consider all possible patterns that satisfy priorly mentioned conditions -
+ℵ(𝐿, 𝐾𝑚𝑎𝑥). From the previous step - clustering - we have a collection of patterns
+
+and motifs that correspond to these patterns. Then, let’s fix some point in the future
+for which we want to make a prediction. Consider this point to be 𝑡 + ℎ. We assume
+that intermediate points are either known or have been predicted on previous steps.
+Then we obtain a vector of observations such that it both corresponds to a pattern
+and ends at 𝑡 + ℎ. For instance, if we have pattern 𝑝 = {𝑘1, 𝑘2, ..., 𝑘𝐿−1} the
+
+vector          of           observations         would         look   as      follows
+𝑣 = {𝑦𝑡+ℎ−𝑘 −𝑘 −...−𝑘 , 𝑦𝑡+ℎ−𝑘 −...−𝑘 , ..., 𝑦𝑡+ℎ−𝑘 }. Then, we consider all the
+                1    2       𝐿−1      2     𝐿−1           𝐿−1
+
+
+truncated versions of motifs that correspond to the pattern 𝑝 (truncation means that
+we exclude the last observation). If the distance between the motif and a vector 𝑣 is
+fairly small (smaller than certain threshold, which is a parameter of the algorithm),
+then the truncated value of the motif – the one that was excluded – is added into the
+set of possible predicted values at point 𝑡 + ℎ. By iterating over all patterns and
+updating the set of possible predicted values we obtain an array of values. This array
+of values at each prediction step bears the name of the set of possible predicted
+values. More detailed description of the algorithm may be found in the appendix.
+         Then the prediction is reduced to finding a function that would turn the array
+of possible predictions into a single prediction. Some of the techniques suggested by
+Baranov include: taking the average, taking the weighted average, taking the mode
+or the weighted mode and etc [6]. Through a number of computational experiments
+it has been discovered that taking the average within quantiles 0.01 and 0.99 is the
+most efficient approach and yields the highest performance.
+
+Figure 7.2 . Blue line - real values, green line - unified predicted values, red points - a set of possible predicted values
+                                                at each step of prediction.
+
+
+
+        Figure 7.2 visually presents the result of the algorithm. The blue line
+corresponds to the ground truth values, the green line corresponds to unified
+predicted value (UPV) and red points represent a set of possible predicted values
+at each step of prediction.
+
+
+7.3 Identification of non-predictable points
+        As it has been described earlier, a concept of non-predictable points has
+improved the quality of predictions. The motivation to use non-predictable points is
+to exclude predictions for which an algorithm may produce knowingly erroneous
+predictions. Thus these points are skipped by the algorithm and are not included in
+calculation of metrics like MAPE (mean absolute prediction error) or RMSE (root
+mean squared error). However, the process of identification of these points is not
+very intuitive.
+        In general, there are two approaches. The first approach relies purely on the
+distribution of points inside the set of possible predicted values. According to
+Baranov, the distribution of points inside the set of predictable points resembles a
+unimodal symmetrical distribution with relatively small variance [6]. On the other
+hand, the distribution of non-predictable points usually resembles a uniform
+distribution or a distribution with multiple noticeable modes. This observation is
+
+quite useful and it would be used throughout this research. We introduce a function
+
+                                                       ^                  ^α
+that calculates the quantiles of the distribution of 𝑆𝑡+ℎ. Let’s denote 𝑆   𝑡+ℎ
+                                                                                  to be α
+
+quantile.    Then,      the   point   𝑡+ℎ      is   labelled   as   non-predictable      if
+^   1−α      ^α
+𝑆𝑡+ℎ        −𝑆   𝑡+ℎ
+                       > εα , where εα and α are adjustable parameters; and is labelled
+
+predictable otherwise. Computational experiment has shown that the optimal values
+for α = 0. 01 and εα = 0. 05.
+
+       The second approach that would be possibly used in the future work suggests
+introducing classification models as well as a new set of data that is independent of
+𝑇𝑟𝑎𝑖𝑛 and 𝑇𝑒𝑠𝑡. By setting an artificial threshold, it becomes possible to find points
+for which the difference between the ground truth values and predictions are larger
+than this threshold and mark them as non-predictable. In order to be able to mark
+points as non-predictable during the inference, when the ground truth values are
+unknown, it makes sense to train a classifier that would be able to mark points as
+non-predictable “in the real time”. From the classification point of view, the target
+variable is quite naive: 1 - if the point is predictable and 0 - otherwise. A few
+sentences prior we discussed how to create the set of target variables for this
+classification problem. However, the problem of creating a feature set is non-trivial.
+Some techniques have been suggested by Baranov [6] include: using the variation of
+values in the set of possible predicted values, using the growth of the aforementioned
+variation from one prediction to another, etc. As for classification algorithms a vast
+majority of algorithms can be used: logistic regression, decision trees, boosting
+algorithms, neural networks, and support vector machines and their combinations.
+However this approach is not in the scope of this research.
+
+8. Experiment: estimating the impact of the auxiliary set
+
+       Now that the theoretical background of the research has been covered it is
+time to proceed to the main part of the research. Namely, estimate the impact of the
+auxiliary set on the quality of predictions.
+       Throughout the research we would keep track of 3 metrics: NP(%) - percent of
+non-predictable points at a given step of prediction, MAPE - mean absolute
+prediction error, RMSE - root mean squared error. Moreover, in order to better keep
+track of values of metrics and the behaviour of the algorithm we will be looking at
+the value of metrics at steps 1, 10, 50 and 100. Also note that prior in this research it
+has been stated that the horizon of predictability for Lorenz series is around 75 steps.
+It means that predictions further correspond to prediction after the horizon.
+       First, it is necessary to obtain baseline values that are produced by the
+algorithm without the auxiliary set. In order to make more comparable results to the
+ones obtained by Baranov [6], the baseline algorithm has been trained on 10000
+observations. The results are presented below on figure 8.1.
+
+
+Now let’s introduce an auxiliary set. In order to better estimate the impact of
+auxiliary set a following procedure is suggested. All time series - both the base and
+auxiliary ones - would be cropped so that the first 5000 observations are dropped.
+This way, each time series would have length 5000, start at point of time 𝑡0 = 5000
+
+and at point 𝑡1 = 10000 would be the end of their training parts, test parts of time
+
+series would remain the same. This way, each time series used for training is shorter
+than the one used in the original research by Baranov [6].
+      Now we can proceed to an experiment with auxiliary time series. The first
+question that arises is that it is unknown how many auxiliary series to consider. So it
+has been decided to run several experiments with different numbers of auxiliary
+series: from 1 to 3. Let’s denote |𝐴𝑢𝑥𝑖𝑙𝑖𝑎𝑟𝑦 𝑆𝑒𝑡| = η, then η = 0 corresponds to a
+case when there is only base series in training set and η ≠ 0 means that there is at
+least one auxiliary time series. Running a large computational experiment revealed
+the following behaviour of the predictions:
+
+
+The table 8.2 presents the results of running the prediction algorithm for
+auxiliary sets of different sizes, and tracks the values of metrics at priorly
+mentioned horizons. Note that the presented values are averages for each
+auxiliary set. Also in case when η > 1 it is possible to consider various
+                                                                                             𝑛             𝑛!
+combinations of two auxiliary series which can be calculated as 𝐶𝑘                               =      𝑘!(𝑛−𝑘)!
+                                                                                                                   .
+
+Given that there are 18 auxiliary series it can be established that in case when
+η = 2 there were 153 combinations of auxiliary sets and the table presents the
+average values of metrics for all combinations.
+
+
+Figure 8.3 Left panel: average value of RMSE for different values of η depending on steps ahead to
+  predict. Right panel: average value of NP(%) for different values of η depending on steps ahead to predict.
+
+
+
+       Figure 8.3 shows how metrics RMSE and NP(%) behave for different
+values of η depending on steps ahead to predict. In combination with table 8.2 a
+number of interesting outcomes can be drawn. First, it can be seen that the
+introduction of the auxiliary set allows us to make predictions that are no worse
+than the “original” ones even though the size of the single time series used for
+training was twice as low as in the baseline. Another interesting observation is
+that the size of auxiliary set - η - plays a big role in the behaviour of NP(%). In
+the research by Baranov it has been stated that the growth of NP(%) has a very
+rapid - almost exponential - nature, which is also shown by our baseline.
+However, the introduction of the auxiliary set slows down the growth and makes
+it more linear. The larger η - the lower NP(%) and less points are labelled as
+non-predictable. However, such an outcome has a side effect - the more points are
+predicted rather than skipped due to being labelled as non-predictable and some
+predictions become erroneous which leads to visible growth of RMSE.
+       This way we have estimated that the optimal size of the auxiliary set is 1,
+which means that in the problem of Lorenz series prediction it is optimal to
+include 1 additional time series to the training set.
+       The next step of the research would be to explore the exact impact of
+auxiliary series on the predictions. Table 10.1 provided in the appendix shows
+how metrics change depending in the value of ρ when considering a single
+auxiliary series. What can be seen is that indeed different Lorenz series have
+different impacts on the resulting predictions and that Lorenz series are not
+equally useful for the prediction: indeed some time series allow the algorithm to
+make more accurate predictions and skip some points that are difficult to forecast,
+whereas others force the algorithm to mark a vast majority of points as
+non-predictable. As a result, depending on auxiliary series the NP(%) varies quite
+significantly, which is not surprising for the nature of the time series that we are
+working with.
+      Thus it would be quite useful to create a function that would be able to
+assess time series’ “usefulness” for predictions. Unfortunately, functions that have
+been tested during this research didn’t show much efficiency and this problem
+would be addressed in further research. One of the tested functions would
+calculate the “similarity” of motifs between two time series. Each motif of the
+base time series has been compared to a motif of auxiliary time series. If the
+difference between them was fairly small, then these motifs would have been
+called similar. The number of similar motifs has been calculated and then divided
+by the total number of motifs. However, this approach showed quite mediocre
+results, which were not sufficient to state the “usefulness” of a time series for
+predictions.
+
+
+
+9. Conclusion and the results
+      As a result of this research following goals have been achieved. First, a
+concept of auxiliary and base time series have been introduced and the impact of
+training data extension has been estimated. It turned out that the introduction of
+the auxiliary set remarkably changes the pace at which the percent of
+non-predictable points grows with the increase of prediction steps. Also an
+optimal size of the auxiliary set has been estimated for the given problem, which
+turned out to be 1. Adding more time series to the training dataset results in the
+
+algorithm making more erroneous predictions and misclassifying points as
+predictable. Moreover, it also has been shown that the prediction error for the
+auxiliary set of the optimal size firstly grows and remains quite steady afterwards.
+Another noticeable effect of the auxiliary set is that even though the time series
+used for algorithm training contained less observations (5000 per time series vs.
+10000 in baseline) the overall quality of predictions remained acceptable and in
+some cases it performed better than the baseline.
+      Second, a distribution based approach to identification of non-predictable
+points has been suggested. The main advantage of this approach is that it doesn’t
+require any additional models to be fit and is computationally inexpensive, which
+speeds up the calculations.
+      As for the prospects for further research, the main goal of the further
+research would be the creation of a method that would assess the “usefulness” of
+a given time series for prediction of the base time series. This way, it would be
+considerably simpler to filter time series and use the selected ones for prediction.
+Also, other techniques of identification of non-predictable points could be tested.
+These techniques mainly include the ones based on machine learning algorithms,
+which have been discussed earlier.

@@ -1,0 +1,397 @@
+                                                                                      Abstract
+
+                                                 While machine learning has witnessed significant advancements, the emphasis
+                                                 has largely been on data acquisition and model creation. However, achieving a
+                                                 comprehensive assessment of machine learning solutions in real-world settings
+                                                 necessitates standardization throughout the entire pipeline. This need is particu-
+                                                 larly acute in time series forecasting, where diverse settings impede meaningful
+                                                 comparisons between various methods. To bridge this gap, we propose a unified
+                                                 benchmarking framework that exposes the crucial modelling and machine learning
+                                                 decisions involved in developing time series forecasting models. This framework
+                                                 fosters seamless integration of models and datasets, aiding both practitioners and
+                                                 researchers in their development efforts. We benchmark recently proposed models
+                                                 within this framework, demonstrating that carefully implemented deep learning
+                                                 models with minimal effort can rival gradient-boosting decision trees requiring
+                                                 extensive feature engineering and expert knowledge. The framework is accessible
+                                                 on here.
+
+
+                                        1     Introduction
+
+                                        Time series forecasting plays a crucial role in diverse fields like finance, weather prediction, and
+                                        demand forecasting. Accurate forecasts empower businesses to optimize decision-making, enhance
+                                        operations, and improve overall efficiency. However, the inherent complexities within time series
+                                        data, including trends, noise, missing values, and evolving relationships between variables, present
+                                        significant challenges to achieving accurate forecasts.
+                                        To address the challenges of time series forecasting, a diverse landscape of methods has emerged.
+                                        Gradient boosting machines (GBM) [8] have become popular in Kaggle competitions due to their
+                                        effectiveness, but require substantial feature engineering effort. While promising, deep learning
+                                        models are less frequently used independently, primarily due to data limitations. The NN3 competition
+                                        aimed to showcase the viability of neural networks (NNs) for time series forecasting, but initial results
+                                        published in 2011 [6] were disappointing, highlighting the dominance of statistical methods. This was
+                                        further confirmed by the 2017 Web Traffic Time Series Forecasting competition [11], where machine
+                                        learning methods performed better with abundant and homogeneous data. Similarly, the renowned
+                                        M4 competition [25] demonstrated the superiority of statistical approaches on heterogeneous data.
+                                        Despite this trend, an ensemble combining an RNN and a statistical model won the competition
+                                        [31], although it was unclear whether this signaled a shift towards deep learning. The successor
+                                        M5 competition [26], utilizing real-world sales data from Walmart, witnessed the dominance of
+                                        gradient boosting machines, with the second-place solution leveraging an ensemble of GBM and a
+                                        neural network [34, 27]. Suggesting a potential shift towards deep learning architectures becoming
+                                        an integral part of the time series forecasting pipeline.
+
+
+The rapid evolution of diverse time series forecasting approaches has made it difficult to compare
+and establish consensus on what constitutes a high-performing deep learning model. While efforts
+exist to standardize datasets for benchmarking these models [10], comparisons often overlook crucial
+aspects across the entire machine learning lifecycle, leading to ambiguous results that offer limited
+guidance for model improvement. For instance, established techniques for training neural networks,
+such as curriculum learning, exponential moving average, and drift estimation, are readily available
+but largely ignored in the current literature. These studies frequently adopt a model-centric
+perspective, focusing solely on the forecasting algorithm itself. Conversely, our work aims to address
+this gap by comprehensively considering all moving parts within the machine learning lifecycle.
+To achieve this, we propose a unified benchmarking framework that standardizes the evaluation
+of forecasting models. This framework facilitates the implementation and comparison of the most
+influential time series forecasting models, enabling a more comprehensive and objective assessment
+of their performance.
+Our contribution are as follows: 1) We develop and open-source a standardized framework for time
+series forecasting benchmarking. The framework has modular components that enable fast and
+easy integration of datasets, models, and training techniques. 2) Using the proposed framework,
+recent popular deep learning models for time-series forecasting are re-implemented and improved
+upon, assesing their preformance on commonly used datasets across these methods. 3) Various
+observations are outlined from the extensive computational resources allocated to tuning these models
+and comparing them. The complete code and detailed reports for our experiments here.
+
+
+2   Related work
+
+The majority of research in time series forecasting has revolved around competitions [17], where
+participants utilize diverse methodologies. These methods fall into three main categories: 1) statistical
+methods, such as ARIMA [2], 2) classical machine learning algorithms, including support vector
+machines [16], gradient boosting machines [5], and 3) neural network-based approaches, exemplified
+by TFT [23] (a transformer-based model), NHITS & NBEATS [4, 27] (which utilize a hierarchical
+approach with multi-layer perceptrons), and MTGNN [35] (another model leveraging the power of
+Graph Neural Networks (GNNs) by incorporating graph structure). However, the use of datasets
+with diverse settings in the methods published hinders accurate performance evaluation and makes it
+difficult to identify a clear frontrunner.
+Despite efforts to standardize benchmarking practices, the variability of datasets across methods
+hinders meaningful comparisons. In [13], authors highlight the limitations of dataset comparisons
+due to diverse features like size, number of features, and noise level. Similar observations are
+echoed by benchmarks like Monash Time Series Forecasting Benchmark[10], which curates datasets
+specifically for model comparison. However, initiatives like [19] focus on classifying model operating
+modes (univariate/multivariate, local/global) as the basis for comparison. In contrast, [21] takes a
+model-centric approach, exploring architectural changes in neural networks. Their findings suggest
+the absence of a universal best architecture, highlighting the data-dependence of model performance.
+While these studies acknowledge the lack of standardization, their focus is either model-centric
+or data-centric which hinders a comprehensive understanding of the interplay between the two.
+Establishing a standardized framework that considers both aspects simultaneously is crucial for
+fostering meaningful comparisons and advancements in time series forecasting.
+While deep learning models have gained popularity, recent works challenge their effectiveness against
+simpler, more interpretable methods [7, 38, 24]. However, we argue that deep learning models haven’t
+received their due credit. With careful consideration throughout the entire machine learning life-cycle
+and appropriate optimization techniques, we believe these models can achieve further improvements
+beyond their initially claimed capabilities.
+
+
+3   Time-series Forecasting Framework
+
+Time series encompass a sequence of data points indexed by time, and forecasting is the process of
+predicting future values from past historical data. Albeit the task can be defined simply in words, the
+machine learning life cycle for such models are quite complex and an end-to-end machine learning
+
+pipeline covering this from data curation to deployment is highly needed. An overview of the
+framework proposed is depicted in Figure 1 which comprises of the following components:
+
+       • Data: Decisions made for improving the data and shaping it for model training. This
+         includes data selection, curation and cleaning.
+       • Training: Decisions made with respect to the input data and model in order to improve
+         downstream performance. This includes model design tailored to input data, optimization,
+         and selection criterion.
+       • Inference: Decisions made with respect to deployment and making predictions on unseen
+         data inputs.
+       • Tuner: Once the above components have been defined, this component selects the top
+         configuration and uses it for post-deployment model monitoring, retraining, and uncertainty
+         quantification.
+
+3.1   Task formulation
+
+In time series forecasting, we are provided with a time series X = (x1 , . . . , xT ), xi ∈ R and a
+pre-specified prediction horizon h ∈ N as the objective. Then a quality metric L : Rh × Rh → R is
+defined to evaluate the prediction quality of the forecasting model M : RT → Rh . The objective is
+to minimize the expectation of this metric E[L(M (X), X + )], where X + = (xT +1 , . . . , xT +h ) is a
+sequence representing the ground truth future values.
+
+3.2   Data Aspects
+
+Data is a critical component machine learning applications and shapes most decisions made within
+the pipeline. Real-world time series datasets often contain missing values, noise, and do not follow
+regularities seen in many benchmark datasets. Most prior works consider the data to be static and
+improvements are solely sought at the model/algorithmic level. We instead consider data modifications
+as part of the overall modelling effort when making comparisons.
+Extending the time series definition, the dataset D = (X, C) consists of a set of n series X =
+{X 1 , . . . , X n }, with X i = (xi1 , xi2 , . . . , xiT ), where T is the length of the time series. Accompanying
+X is a set of covariates C = {C 1 , . . . , C n }, C i = (ci1 , ci2 , . . . , ciT ). Here, the time series and
+covariates can be vectors of arbitrary dimension, i.e. xit ∈ Rd and cit ∈ Rk , where d and k are the
+
+
+dimensions of the time series and covariates, respectively. For the case when d = 1 the time series is
+considered univariate and when d > 1 it is considered multivariate.
+In this way of defining the dataset multiple assumptions can be violated 1) Series in X are independent
+of each other - in this case a static data S may be present within the dataset D = (X, C, S) which
+can contain correlation information between the series (e.g. spatial location of the sensors which
+were used for data collection) 2) Series in X are of the same length - in this case the length T can
+vary between series 3) Prior knowledge about the future is lacking where in fact it could indeed be
+contained within the covariates or a variable. - in this case covariates C are split into two disjoint
+sets: Co which contains covariates that we have no future knowledge on and Ck where we do have
+such knowledge. For example we may know an event occurring in the future in advance or we have
+full control over a variables.
+Using the dataset D, the data-split module generates the splits (Dtrain , Dval , Dtest ) corresponding to
+the train, validation and test sets, respectively, and is fixed amongst methods. Beyond this point,
+how the data is shaped can dramatically effect how it can be consumed by downstream models. For
+example, an underlying method may be sensitive to the dynamic range and may require normalization,
+or on other hand cannot accommodate covariates as additional input, hence these must be excluded.
+The pre-processing function p implements a variety of functionalities, such as filtering, outlier
+removal, imputation, label correction, feature selection, and so on. It may also be the case that at
+each pre-processing step multiple viable alternatives can be applied to the data to improve its quality
+for a particular model and should be exposed to a tuner when evaluating the overall performance. In
+general p is set to satisfy certain modeling conditions and downstream assumption.
+
+3.3   Training Aspects
+
+Once the dataset is prepared, we must determine how much exploration is necessary for model
+training and how to ensure reliable training. In general, a forecasting model M is a function which
+takes a series of observed values as well as the covariates as inputs, and predicts a series of forecast
+outputs:
+                                      M (S, X, C) 7→ X̂ + ∈ Rd×h                                         (1)
+Due to finite computational resources, it’s common to limit the data used for training. This is
+achieved through a look-back window, which varies across models. A standard assumption is
+that the most recent values of a series contain the most relevant prior for future predictions. A
+fixed-length look-back window l is used, starting at the index where future predictions are de-
+sired. More concretely, let X ′ be the set of series from X trimmed to the last l observations, i.e.
+X ′ := {(xiT −l+1 , . . . , xiT )|(xi1 , . . . xiT ) ∈ X} and analogously define Ck′ and Co′ . Following this
+assumption, the history is approximated using the look back window:
+
+
+                                M (S, X, Ck , Co ) ≈ M (S, X ′ , Ck′ , Co′ )                             (2)
+Here, the model M can either operate at a global level in which model parameters are estimated
+using all available time series in the dataset or on the other extreme at a local level where a single
+time series in the dataset is used to estimate model parameters [10]. The choice of M may also result
+in different training parameters which can include optimization parameters, initialization, objectives,
+whether to apply curriculum learning, exponential moving averaging (EMA) and so on. These sets
+of parameters must also be considered jointly with model exploration as will be discussed in Sec,
+3.5. Thus it is important to consider parameter ranges that control model complexity and training
+complexity.
+The quality of the model M is measured by evaluating model’s predictions given ground truth values
+using a loss function
+                                         L : Rd×h × Rd×h → R                                             (3)
+Here, often we assume there is only one metric that is useful to serve for both as a training objective
+and for model selection, which may not be the case. The stopping criterion used to terminate training
+early can also effect final model selection. Having pre-specified dataset decisions, in the training
+portion the objective is then to find the best data-informed model that has the lowest loss on a held
+out dataset.
+
+3.4   Inference Aspects
+
+Successful models often rely on certain assumptions about the series they aim to predict, such as
+stationarity or no gaps in the data. Generally the forecast window predicted by the model is set by the
+                                              i
+downstream task, resulting in predictions X+     = (xiT +1 , . . . , xiT +h ). Similar to how a preprocessing
+function p was defined in Sec. 3.2 to transform the raw series, a post-processing function p′ operates
+on the forecast window to reverse certain aspects of the preprocessing decisions steps (for example,
+normalization) and incorporate domain expert knowledge about how the predicted window should be
+interpreted (for example, product sales cannot be negative and setting a lower bound).
+Successful models often rely on certain assumptions about the data they aim to predict, such as
+stationarity and no gaps in the series. These assumptions simplify the modeling process and allow for
+more accurate predictions. However, real-world data rarely adheres perfectly to such assumptions.
+To compensate for this, similar to preprocessing techniques are often employed to transform the raw
+data into a format that satisfies the model’s output requirements.
+The forecast window predicted by the model is typically determined by the downstream task it serves.
+For example, a sales forecasting model might be designed to predict product demand for the next
+                                       i
+month, resulting in a forecast window X+ = (xiT +1 , . . . , xiT +h ), where T is the current time and h
+is the prediction horizon.
+While preprocessing prepares the data for modeling, a post-processing step ensures the predicted
+values are interpretable and aligned with domain knowledge. This post-processing function, denoted
+as p′ , operates on the forecast window and performs several key tasks. It reverses certain aspects
+of the preprocessing steps, such as denormalization, to return the predicted values to their original
+units. Additionally, it incorporates domain-specific knowledge to ensure the predictions are realistic
+and consistent with real-world constraints. For instance, a post-processing function for product
+sales might enforce a non-negativity constraint, preventing the model from predicting negative sales
+figures.
+By combining preprocessing and post-processing steps, we can leverage the strengths of machine
+learning models while ensuring the predictions are interpretable and applicable to the specific domain.
+
+
+3.5   Tuner Hyperparameter Selection
+
+In the aforementioned sections we have considered a series of hyperparameter configurations spaces
+which must be explored to ensure reliable model training and comparison. There is a little incentive
+for authors to reproduce other paper’s results in their training setup, and this in turn may put the
+reference models at a disadvantage. To ensure a fair comparison models should be implemented
+within the same framework with access to the same modifications across the pipeline as well as
+hyperparameter optimization (HPO) algorithms. Let Λ = Λ1 × Λ2 × · · · Λn define the space of
+all hyperparameters, and a vector in this hyperparameter space be denoted by λ ∈ Λ. Within
+this set of hyperparameters a series of ranges for each are considered, and is denoted by A. The
+hyperparameters consists of both model specific λM and dataset or training specific parameters λP ,
+that is λ = [λM ; λP ]. Then the objective of the tuner is to find
+
+where V measures the loss of the framework set with hyperparameters Aλ . When running this tuner
+for each model, a fixed budget B for finding the best configuration defined in terms of compute hours
+is used when running the pipeline on the same system and environment. In order to obtain the final
+model M a two-fold optimization process is used: 1) a hyperparameter λ is sampled from A 2) an
+optimization procedure is applied on model weights using Dtrain ∪ Dval . The model optimization
+procedure terminates when it meets a stopping condition evaluated on a validation set. 2) step 1 is
+repeated until the HPO budget B is exhausted. In the next section we explain how models protability
+and generalizability is assessed. The process is depicted with more detail in the flow chart depicted in
+Figure 2 and Section B of the Appendix.
+
+
+3.6   Model Selection & Evaluation
+
+In order to compare models, simply evaluating a single trained model is not adequate due to the
+inherent variance in the performance for such tasks. For example, simply changing random seeds will
+result in an accuracy spread which may be deemed statistically significant as done in [29]. Instead, the
+top configuration found by the tuner is used to initialize the family of parametric models q(θ|D, λtop ),
+from which model are sampled and trained. The trained model is denoted as p(y|D, θ)). We sample
+K such models θm ∼ q(θ|D, λtop ), and evaluate using the loss:
+
+Similarly, the variance of the losses is computed and represented as σ 2 = Var(L(p(y|D; θ), y)). To
+compare two models a statistical test is formulated to determine if model M1 has a lower expected
+loss than the other model M2 . Let q1 be the parametric family of models for M1 , along with its
+expected loss E1 , and variance σ12 . Similarily, q2 be the parametric model for M2 , E2 the expected
+loss and σ22 its variance. The null hypothesis posits h0 : there is no significant difference between the
+expected losses of the models. Then the t value is given by
+
+By specifying a desired significance level α, the null hypothesis is rejected if t > tcrit where tcrit is
+taken from the t-distribution table. In the case where there is a significance difference it can easily
+be determined which model is better by picking the one with lower expected loss. This method
+of comparing is robust to random initialization and training settings, which also better reflects the
+portability of the model across datasets.
+
+4     Experiments
+4.1   Dataset Details
+
+Time series model benchmarking can be challenging due to the diversity of data characteristics.
+Unlike in natural language processing (NLP) or computer vision (CV), where data tends to have
+more consistent characteristics, time series data can vary significantly in terms of its structure and
+complexity[14]. This makes it difficult to accurately compare the performance of different models
+and methodologies, as there may not be a one-size-fits-all approach that works well across all
+datasets. The data-centric approach taken considers the variations in how the data is transformed as
+an additional tunable parameter.
+In our experiments, four widely used datasets in time series forecasting benchmarking are considered
+and summarized in Table. 4.1: the Electricity, PEMS-BAY, Wiki-Traffic Prediction, and the M5
+dataset. For more details on each dataset refer to Appendix C
+For these datasets we consider various normalization preprocessing steps p: Z(x) := x−µ
+                                                                                     σ where µ is
+the mean and σ the standard deviation, log transformation log(x) := log(x + 1), and the composite
+of these Z(log(x)) := Z(log(x + 1)).
+
+
+Feature-engineering is also considered as a preprocessing step on the input which is detailed in
+Appendix C and depends on the dataset properties. For preprocessing functions that require fitting on
+an underlying data, they are done so on the Dtrain . The validation Dval and test Dtest data splits are
+standardized based on the training split of each dataset.
+
+4.2   Models Details
+
+For our experiments, the considered models contain well-established reference implementations and
+demonstrate state-of-the-art performance on the datasets listed in the previous section. These models
+are re-implemented and optimized within the proposed framework, achieving performance that either
+matches or surpasses the reference implementations. The summary of these models is presented in
+Table 4.2.
+Each model has a corresponding set of hyperparameters λm which pertain to the hidden dimension
+sizes, number of layers, etc, the complete list and the ranges considered for each dataset and model is
+specified in Appendix D.1. Note that amongst these models is also a strong baseline XGBoost, often
+used to compete in competitions with additional feature engineering pre-processing steps.
+
+4.3   Evaluation Metrics
+
+The following metrics are considered when evaluating each model:
+
+Each metric is computed pointwise regardless of the forecast window h. Many publications use
+MAPE[39, 32, 35, 36] or q-risk[23, 30] metrics, and since MAPE is unbounded (if the ground truth
+approaches 0) we chose to use SMAPE instead.
+
+4.4   Training Loop & Optimizers
+
+Irrespective of models and datasets, there are techniques that can be leveraged when training time
+series forecasting models to improve performance. In particular the choice of optimizer, for example
+Adam [20] and its hyperparameters such as initial learning rate, momentum, etc. Techniques that
+directly modify the training loop like exponential move averaging (EMA), where an offline model
+keeps track of the model-weights using a exponential moving average similar to [12, 18] or curriculum
+learning (CL) [1] are also considered to be tunable.
+
+Table 3: Summary of hyperparameters considered specific hyper-parameters for various models and a
+more extensive list is provided in the Appendix D.1.
+
+4.5     Tuner & Compute Details
+
+The hyperparameters considered for the tuner to optimize are summarized in Table 3 and their
+corresponding ranges setting the subspace of valid hyperparameters A.
+All our experiments are conducted on DGX1-32G system with 8xV100 GPUs. The computational
+budget B is set to one DGX week i.e. 1344 GPU hours for each model-dataset combination. For
+evaluating models, the top configuration is trained K = 256 times for Electricity and PEMS and
+K = 64 for M5 and Wikitraffic datasets, and then evaluated on the test set using the metrics described
+in the section 4.3.
+
+
+5     Results
+
+Table 4 summarizes the empirical performance of the different models on the target datasets within
+the proposed framework and experimental setup. Notably, deep learning models exhibit strong
+competitive performance against XGBoost models, which leverage selective feature engineering
+and expert knowledge, on several individual datasets. This finding challenges the assumption that
+traditional, feature-engineered models consistently outperform deep learning approaches in time
+series forecasting tasks. Moreover, the results showcase the absence of a single model that reigns
+supreme across all datasets, highlighting the importance of considering data-specific characteristics
+when selecting a forecasting model.
+Building upon the individual model performance, we explored ensemble learning, a widely recognized
+strategy to boost forecasting accuracy in time series tasks [9]. To this end, we trained up to 256
+instances of each model with optimized hyper-parameters derived from different random seeds,
+resulting in a diverse ensemble of predictors. The final prediction was obtained through decision
+fusion via prediction averaging, leveraging the collective wisdom of the ensemble; Table 5 presents
+the summary of results for the ensemble models. Through the experiments conducted on these models
+a series of observations can be made:
+Metrics: Different models can be superior depending on the chosen metric, emphasizing the im-
+portance of considering a collective of metrics for model comparison. We excluded the TDI metric
+as the tuner was unable to effectively utilize it for model discrimination. This highlights the need
+of including multiple evaluation metrics that are both informative and readily usable by automated
+optimization tools.
+Effect of Batch Size: Contrary to domain-specific recommendations favoring smaller or larger batch
+sizes, our findings suggest a tighter coupling between batch size and the specific dataset and model.
+For example, DeepAR prefers smaller batch sizes, while N-BEATS exhibits insensitivity to this
+hyperparameter, and TFT requires a specific range.
+
+
+CL & EMA: In contrast to previous claims, the investigated training techniques did not consis-
+tently improve performance across datasets. Notably, curriculum learning (CL) provided negligible
+improvement despite efforts to encourage the tuner to enable it. Exponential moving averaging
+(EMA) produced mixed results, potentially due to the noise inherent in the forecasting task and the
+detrimental effects of EMA smoothing.
+Context Length (l): The optimal context length exhibits a strong dependency on the specific model
+and dataset combination. This implies that a single, universal context length recommendation
+is unlikely to be effective across all models and datasets. N-BEATS and NHITS, for example,
+demonstrate poor performance when provided with limited context (less than 256 data points).
+However, their performance significantly improves with access to a richer context (greater than 256
+data points).
+Weak Models as Strong Baselines in Ensembles: DeepAR, despite its subpar performance when
+trained individually (e.g., on the WikiTraffic dataset), exhibits a remarkable transformation when
+incorporated into ensembles. As shown in Table 5, ensembles utilizing DeepAR achieve significantly
+superior performance compared to other models. This intriguing finding underscores the potential of
+seemingly weak models to act as powerful baselines within ensemble configurations. By leveraging
+the diverse strengths of individual models, ensembles can collectively achieve superior performance,
+even when some components under-perform in isolation.
+
+6       Conclusion
+The lack of standardization within the time series forecasting domain presents a significant impedi-
+ment to progress. This issue manifests in inconsistent reporting practices, even when using the same
+dataset, as evidenced by discrepancies in metrics reported across various studies [23, 35, 37]. Addi-
+tionally, the frequent reporting of results obtained with suboptimal hyper-parameters further obscures
+the true performance potential of different models, making it difficult to discerningly judge their rela-
+tive strengths and weaknesses [23]. This work addresses these challenges by proposing a standardized
+workflow and framework that facilitates seamless integration of diverse datasets and training/inference
+logic. Furthermore, this framework transparently exposes decision-making processes throughout
+the workflow, enabling optimization tools to guide researchers and developers in their exploration.
+Our empirical evaluations reveal that deep learning methods demonstrate competitive performance
+against XGBoost models, challenging the traditional perception that feature-engineered approaches
+consistently dominate this domain. By promoting standardization and transparency, this work paves
+the way for more robust and reproducible research in the field of time series forecasting.

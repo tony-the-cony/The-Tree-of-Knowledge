@@ -1,0 +1,970 @@
+
+                                          Abstract: Traditional statistical, physical, and correlation models for chaotic time series prediction
+                                          have problems, such as low forecasting accuracy, computational time, and difficulty determining
+                                          the neural network’s topologies. Over a decade, various researchers have been working with these
+                                          issues; however, it remains a challenge. Therefore, this review paper presents a comprehensive
+                                          review of significant research conducted on various approaches for chaotic time series forecasting,
+                                          using machine learning techniques such as convolutional neural network (CNN), wavelet neural
+                                          network (WNN), fuzzy neural network (FNN), and long short-term memory (LSTM) in the nonlinear
+                                          systems aforementioned above. The paper also aims to provide issues of individual forecasting
+                                          approaches for better understanding and up-to-date knowledge for chaotic time series forecasting.
+                                          The comprehensive review table summarizes the works closely associated with the mentioned issues.
+                                          It includes published year, research country, forecasting approach, application, forecasting parameters,
+                                          performance measures, and collected data area in this sector. Future improvements and current
+                                          studies in this field are broadly examined. In addition, possible future scopes and limitations are
+                                          closely discussed.
+
+                                          Keywords: chaos; forecasting; hydrological systems; neural networks; oil and gas; power and energy;
+          
+             1. Introduction
+
+                                               The first section of this paper provides a brief description of the chaos and the prop-
+                      erties of chaotic systems. In addition, the importance of chaotic time series forecasting in
+                                          significant areas is addressed. Finally, this section covers the previous and current literature
+ surveys on chaotic time series forecasting.
+
+      1.1. Chaotic Systems
+           The behavior of a nonlinear dynamical system that may be extremely sensitive to
+ small changes in initial conditions is known as chaos. This sensitivity to initial conditions
+ means that a slight change in the starting point can lead to different outcomes. For example,
+                          the butterfly effect shows how a small change in one state of a deterministic nonlinear
+                                          system may result in enormous deviations in a subsequent state [1]. The other characteristic
+                                          of a chaotic system is no periodic behavior. The symmetric property of these nonlinear
+                                          dynamic systems can play a vital role in producing the systems’ chaotic behavior. Due to
+
+                                          this fact, various researchers have recently shown much interest in the symmetric properties
+
+                                          of chaotic systems. In [2], the authors have proposed a chaotic oscillator with both odd
+
+                                          and even symmetries. Similarly, some of the other applications of symmetric properties of
+
+                                          chaotic systems lie in image processing, security, and communications [3]. The symmetric
+
+                                          and asymmetric behavior has been observed in many natural phenomena. Due to these
+
+                                          characteristics, the chaotic motion is difficult to forecast. For instance, predicting the
+
+                                          butterfly effect for the long term is impossible [1]. This is because these systems are
+
+
+
+                         deterministic, i.e., the future behavior of these systems is entirely defined by their initial
+                         conditions. Hence, these systems are wholly deterministic and unpredictable.
+                               On the other hand, a chaotic time series is generated when the variable changes with
+                         time in a chaotic system. This chaotic time series provides extensive information about the
+                         nonlinear system and helps evaluate and analyze the chaotic system’s behavior. The phase
+                         space reconstruction technique reveals this dynamic information hidden in the chaotic time
+                         series and transforms the existing data into a more describable framework [4]. As a result,
+                         it is essential to have approaches that can forecast chaotic time series and differentiate
+                         chaotic data from stochastic data [5–7]. The traditional prediction methods for this purpose
+                         have failed to produce satisfactory performance. Thus, many advanced techniques using
+                         machine learning-based approaches have been proposed recently. Therefore, this paper
+                         presents a comprehensive review of the performance of traditional and machine learning-
+                         based methods for chaotic time series forecasting and their implementation on nonlinear
+                         dynamical systems, such as photovoltaic systems, wind farms, communication signals and
+                         systems, oil and gas, hydrological systems, weather, and other systems.
+
+                         1.2. Importance of Chaotic Time Series Forecasting
+                               Forecasting is an approach for creating predictions to determine the direction of future
+                         trends using historical data and current trend analysis as inputs [8]. Forecasting is the most
+                         significant optimization concept related to energy savings, material savings, increasing
+                         efficiency, making appropriate and suitable accurate decisions [8,9]. On the other hand,
+                         chaos theory is an essential part of nonlinear science, developed in the 1970s [10]. Chaos is
+                         a long-term non-periodic behavior in a predictable system with a high sensitivity to initial
+                         conditions. It shows the order and regularity hidden behind disorganized and complex
+                         occurrences. This tendency permeates and promotes many subjects. As a result, chaos
+                         research has access to a solution. In the meantime, chaos theory applications are becoming
+                         increasingly popular. They are significantly used in diverse scientific applications such as
+                         wind farms [11], PV systems, oil and gas [12,13], hydrological systems [14], etc. A brief
+                         description of the need for chaotic time series forecasting in each of these applications is
+                         explained below.
+
+                         1.2.1. Chaotic Time Series Forecasting in Power and Energy
+                               Electricity demand and market price predictions have played a significant role in the
+                         electric power industry for over a century [15]. Moreover, due to the worldwide energy
+                         crisis and alarmingly rising air, water, and soil pollution levels, renewable energy has be-
+                         come increasingly popular for power generation in recent years. This popularity is because
+                         renewable energy is a pure and limitless energy source [11]. As a result, a rising number
+                         of nations are becoming involved, and investors are committing to developing renewable
+                         energy plants. However, the lack of consistent energy sources due to intermittent nature
+                         represents renewable energies’ main problem. Thus, forecasting renewable generation
+                         is the key to integrating these intermittent energies into the electricity grid for several
+                         reasons [9,16]. The main advantage of predicting the intermittent nature of renewable
+                         energy resources is that the number of backup systems can be reduced, thus, reducing the
+                         investments and need for electricity to meet the demand. Many forecasting approaches
+                         have been proposed using ANN, fuzzy, etc. These approaches are based entirely on time
+                         series analysis in which the chaotic time series data of renewable energy are one of the
+                         most challenging dynamics to be forecast.
+
+                         1.2.2. Chaotic Time Series Forecasting in Oil and Gas
+                              It is well known that the intake flow of a gasoline engine directly impacts the accuracy
+                         of the air–fuel ratio management under transient situations [12]. As a result, precise control
+                         becomes extremely difficult because the air ratio is far from stoichiometry for various
+                         reasons. Thus, forecasting the engine’s intake flow with greater accuracy in less time can
+                         improve the convergence rate. Additionally, it will be able to overcome the shortcomings of
+
+
+                         the airflow sensor’s lag. This is because it allows an accurate forecast of the future airflow.
+                         Similarly, it is also well known that there are abnormal fluctuations in the ventilation
+                         air in the nonlinear coal mines’ ventilation systems [17]. These fluctuations in the air
+                         are due to the mining depth and intensity gradually increasing and equipment aging.
+                         The abnormalities, as mentioned earlier, can affect the entire system, resulting in various
+                         underground accidents and lost coal mines’ ventilation system stability. Therefore, timely
+                         air quality prediction in coal mines’ ventilation systems can help adequately manage
+                         systems, which directly influences the safety and output of the coal mine.
+
+                         1.2.3. Chaotic Time Series Forecasting in Hydrological Systems
+                              Hydrological forecasting plays a critical role in reducing future flood impacts, also
+                         helps produce more benefits for hydropower production, and enhances water resource
+                         management [18]. It is worth noting that predicting the destiny of a river inflow is an
+                         essential concern for water quality management [19].
+
+                         1.2.4. Chaotic Time Series Forecasting in Other Systems
+                              The distributed control system and information technology, which comprises supervi-
+                         sory information technology and management information systems, are commonly used
+                         technologies in thermal power plants [20]. The real-time data collected from power plant
+                         equipment and personnel controls using these technologies are a chaotic time series. Fur-
+                         ther, the instantaneous generator output power is critical to indicate the adjusting and
+                         controlling equipment’s status. As a result, predicting the immediate generator power time
+                         series could provide decision-making, maintenance, and incident-handling information.
+                         Further, it positively impacts plant production, optimal operation, and problem detection
+                         and maintenance technology.
+                              Natural hazards, such as earthquakes, severe floods, fires, and volcanic eruptions,
+                         and the destruction they create are worldwide issues that impose a high cost in terms of
+                         human lives and financial damages [21]. The wireless sensor networks monitor the urban
+                         river levels and other natural environmental conditions for predicting the floods before
+                         they occur so that the people at risk evacuate in time.
+                              Similarly, the nonlinear spacecraft system contains various fields with advanced
+                         technology, and it has a significant impact on national economies, research, and technology.
+                         Faults in the spacecraft system are challenging to detect and rectify. As a result, studying
+                         the trend of spacecraft telemetry metrics and the variation law is essential for the early
+                         prediction of spacecraft problems.
+
+                         1.3. Previous and Current Literature Survey
+                              Few reviews have focused on applying chaos theory in multiple applications. For in-
+                         stance, in [14,22,23], a study on the application of the chaos concept in hydrology was
+                         reported. The study also reveals some critical issues raised while applying the chaos
+                         concept in hydrology. Similarly, a review of the application of chaos theory in traffic flow
+                         patterns was reported in [24]. In both works, some of the reviewed methods reported for
+                         the short-term forecasting are correlation dimension, Lyapunov exponent, Kolmogorov
+                         entropy, SVM, ANN, nonlinear prediction, and dynamic neural network. These reviews
+                         overlapped with elements of this field, though none have brought together all material
+                         related to chaotic time series forecasting approaches using machine learning techniques for
+                         various applications.
+                              Considering the above research scope, the authors in this paper reviewed chaotic time
+                         series forecasting approaches using machine learning techniques in various applications.
+                         At first, the importance of chaotic time series forecasting is identified in multiple appli-
+                         cations, including all the recently published methods, and addresses issues of individual
+                         techniques. The review of these chaotic time series forecasting approaches in the past three
+                         decades is summarized in Section 2. Section 3 gives a comprehensive review of machine-
+                         learning-based chaotic time series forecasting approaches developed using ANN, FNN,
+
+
+                                              WNN, and optimization algorithms. The study on forecasting various chaotic parameters
+                                              in multiple applications is detailed in Section 4. Section 5 discusses the various perfor-
+                                              mance measures used for chaotic time series forecasting approaches. Finally, Section 6
+                                              concludes the current works, highlighting the shortcomings and suggesting possible future
+                                              research perspectives.
+
+                                              2. Review on Chaotic Time Series Forecasting
+                                                    In the past three decades, many researchers have rigorously researched forecasting of
+                                              chaos in various areas, such as wind farms, photovoltaic systems, hydrological systems,
+                                              communication systems, and oil and gas fields, using ANN. Thus, there is a scope for a
+                                              critical review of chaotic time series forecasting in various areas using machine learning
+                                              techniques. This manuscript critically reviews various works published from 1992 to 2021.
+                                              The decade-wise research contributions to chaotic time series forecasting during this period
+                                              are shown in Figure 1.
+
+
+
+                                       According to the literature review collected from Table 1, 43% of works have em-
+                                 ployed the ANN-based approaches in the literature for chaotic time series forecasting.
+                                 The additional techniques are based on the following: FNN 24%, optimization algorithms
+                                 15%, WNN 6%, and other approaches 4%. In the 15% of optimization-algorithm-based
+                                 techniques, the various algorithms used are GA, PSO, SSA, SA, SOM, CGO, GWO, CBAS,
+                                 etc. The objective of these techniques is to improve accuracy, computational efficiency,
+                                 and concerns due to the presence of uncertainties in various applications. Some novel
+                                 techniques reported in Table 1 focused on efficiently tackling multiple objectives. Table 1
+                                 also shows that these articles have dealt with several forecasting parameters, such as load,
+                                 power, speed, traffic flow, signals, etc. In some of these works, real-time data were also
+                                 collected from various countries, including Australia, Belgium, Canada, China, Iran, Laos,
+                                 Morocco, Thailand, and the USA, as shown in Figure 2. In the first decade, research on
+                                 chaotic time series forecasting relied on statistical data to forecast the system’s future behav-
+                                 ior. The rest of the decades used artificial intelligence and other novel models for chaotic
+                                 time series forecasting in various applications. The detailed analysis of various forecasting
+                                 approaches in different applications is explained in the following sections.
+
+
+
+                         3. Neural Network-Based Forecasting Approaches
+                              As mentioned in Section 2, various researchers have developed ANN, FNN, WNN,
+                         and optimization-based approaches for chaotic time series forecasting. The multiple tech-
+                         niques developed using these approaches are shown in Figure 3. A detailed explanation of
+                         these techniques, including the objectives and performance analysis, is presented under-
+                         neath. The future scope of the method is also highlighted.
+                                        Wavelet NN, Chaotic Wavelet NN         Wavelet Transform, Discrete Wavelet Transform
+                                           Gaussian Particle Filter                      Backpropagation-ANN, Chaotic Backpropagation-ANN
+                          Generalized Extended Kalman Filter                                     Chaotic-ANN, Chaotic-RBF-ANN
+                           Polynomial Chaos Kalman Filter                                             CNN, Deep CNN
+                               Unscented Kalman Filter                                                  Delay-based ANN
+                                    GA, Improved GA,                                                      Elman-ANN, Elman-NARX-ANN
+                              Temporal Difference GA                                                        Ensemble ANN
+                         PSO, Adaptive PSO, Chaotic
+                                                                      Neural Network-Based                   LSTM, RNN-LSTM
+                         PSO, Chaotic Immune PSO,
+                               Bee evolutionary PSO                     Chaos Forecasting                    MLP Network
+                                                                          Approaches
+                             SSA, CBAS, CGO, GWO,                                                            NARX-ANN
+                                         MRFO, HBO
+                                                                                                            RBF-ANN
+                                 Simulated Annealing
+                           SOM, AOA, TLBO, CCO, EDA                                                       RNN, Evolving RNN, Deep RNN,
+                                                                                                          GRU-Deep RNN
+                                      Self-Organizing FNN                                              Self-Organizing Map-ANN
+                                   Repetitive Fuzzy Method
+                                                                                                  Rough Set ANN
+                                           LSTM-FNN CMAC-FNN
+                             Dynamic Recurrent FNN Wavelet-based FNN                         Adaptive FNN, Adaptive RBF-FNN
+                                                       Clustering-Based FNN           Chaotic FNN, Chaotic RBF-FNN
+
+                         3.1. ANN-Based Forecasting Approaches
+                               ANN has multiple perceptrons’ or nodes at each layer. For example, the network
+                         with two input nodes, two hidden layers with four nodes in each, and one output node is
+                         shown in Figure 4. This network can be called FFNN when its inputs are processed forward
+                         (refer to the red dotted line in Figure 4). The FFNN is one of the most straightforward
+                         neural networks, and it passes information in one direction through various input nodes
+                         until the output node [178]. This type of neural network may or may not have hidden
+                         layers, making its functioning more understandable. Some advantages of FFNN include
+                         storing information on the entire network, working with incomplete knowledge, offering
+                         tolerance, and having distributed memory. However, the disadvantages of FFNN include
+                         having hardware dependency and unexplained behavior that can leave us tormented with
+                         results. No particular rule for deciding the network’s structure and the appropriate network
+                         structure is achieved through experience and trial and error.
+                               BPNN is an essential mathematical tool for improving the accuracy of predictions in
+                         data mining and machine learning. In FFNN, the network propagates forward to obtain
+                         the output and compares it with real value to obtain the error. However, to minimize the
+                         error, the BPNN will propagate backward by finding the error derivative for each weight
+                         and then subtracting this value from the weight value. The architecture of a BPNN is also
+                         shown in Figure 4, and the direction of propagation is shown in the green dotted line.
+                         On the other hand, RNN is more complex than FFNN and BPNN. Here, the RNN’s every
+                         node acts as a memory cell and continues the operations computation [4]. The RNN saves
+                         the output of processing nodes and feeds them back into the network, and hence, they do
+                         not pass the information in one direction only (refer to the blue dotted line in Figure 4).
+                         If the network’s prediction is incorrect, the system self-learns and continually works toward
+                         correcting the forecast during backpropagation.
+                               Researchers have utilized ANNs in numerous applications to predict or forecast
+                         various chaotic systems’ behavior. For instance, in [25], the researchers developed the
+
+
+                         complex weighted neural network method for high-resolution adaptive bearing prediction.
+                         It is observed that this concept is especially effective in circumstances where the hermit
+                         matrix progressively changes over time due to adaptive tracking. Jae-Gyan Choi et al.
+                         proposed the application of ANN in power systems for predicting the one-day-ahead
+                         daily peak load based on chaotic time series data using absolute error as a performance
+                         measure [26]. It is to be noted that the proposed technique can also be used for other
+                         forecasting applications, such as predicting the special days, hourly load, temperature,
+                         etc. In [27], the researchers have presented the RNN model for Mackey–Glass chaotic time
+                         series. The proposed model’s experimental results are more practicable and effective in
+                         making short-term predictions for chaotic time series than the multi-dimension embedding
+                         phase space method.
+
+                              Guichao Yang et al. developed a multilayer neural network adaptive control algorithm
+                         for disturbance compensation in nonlinear systems. The work remarks that this devel-
+                         oped algorithm can also be used simultaneously for nonlinear systems with mismatched
+                         uncertainties. Additionally, an extended state observer was employed to estimate the
+                         exogenous disturbance and predict the system’s state [179]. In extension, the authors pre-
+                         sented the integration of a full-state feedback control algorithm, adaptive neural network,
+                         and extended state observer to handle the unknown nonlinear dynamics and external
+                         disturbances. In addition, the output feedback control algorithm was combined with an
+                         adaptive neural network, extended state observer, and nonlinear disturbance observer
+                         to estimate the unknown nonlinear dynamics, unmeasured states, and external distur-
+                         bances [180]. In both works, a double-rod hydraulic servo system was chosen to validate
+                         the two control schemes’ high-performance control effect. The authors also introduced a
+                         neuroadaptive learning method for disturbance rejection in constrained nonlinear systems.
+                         Moreover, the neural network adaptive control and the extended state observer to estimate
+                         endogenous uncertainties and external disturbances in real time and correct them feed-
+                         forwardly were presented in [181]. Further, the filtering problems and nonlinearity of the
+                         input were accounted for by adding an auxiliary system. Finally, the overall closed-loop
+                         stability was precisely ensured, and the accomplished control performance was validated
+                         by real-time nonlinear systems application results.
+
+
+                               Another forecasting method known as delay-based ANN for predicting the turbulent
+                         flow temporal signals was proposed in [32]. These signals are obtained from a hot wire
+                         anemometer at a single point inside the cylinder to detect coherent structures. In [34],
+                         the authors presented the RBFNN model for forecasting the time series of the logistic map,
+                         Henon map, Mackey–Glass, and Duffing’s systems. In [36], the researchers developed the
+                         recurrent predictor neural network model for predicting the annual and monthly sunspot
+                         time series. The experimental results of the proposed model are better than the Kalman
+                         filter and universal learning network in terms of accuracy and RMSE. The authors of [39]
+                         developed the KIII-chaotic neural network for forecasting the multistep time series data
+                         on a benchmark system. In [40], the researchers presented the RNN for predicting the
+                         electricity price of the power system. The work highlights that this approach is equally
+                         relevant to Chinese electrical market data. In [43], the authors presented the RBFNN
+                         model for forecasting the Henon map, Lorenz map, four real-time series discharge data,
+                         and sea-surface temperature anomaly data collected from various rivers. The work remarks
+                         that this presented model can also be used for geological time series. In [48], the authors
+                         raised the time delay neural network method for predicting the future behavior of the solar
+                         activity. In [51], the researchers demonstrated the BPNN to forecast the multistep nonlinear
+                         time series of the diode resonator circuit. From the presented work, it is to be noted that
+                         the approach can also be used in other chaotic time series.
+                               Qian-Li Ma et al. presented the evolving RNN model for the Lorenz series, logistic,
+                         Mackey–Glass, and real-world sunspots series [53]. The experimental results of the pro-
+                         posed model showed to be better than the boosted RNN. Bao Rong Chang and Hsiu Fen
+                         Tsai proposed an optimal BPNN model for time series of signal deviation in the stock mar-
+                         ket [55]. The proposed method is based on SVM and AR models. The experimental results
+                         of the proposed model showed better performance than the ARMA, RBFNN, and other
+                         models in terms of MAD. In [57], the authors developed the NARX neural network model
+                         for empirically predicting chaotic laser, variable bit rate, and video traffic time series of
+                         real-world datasets. The simulation results of the developed model reliably performed
+                         better than the Elman architectures. Further, the work highlights that this model can also
+                         be used for electric load forecasting, financial time series, and signal processing tasks.
+                               Yagang Zhang et al. developed an ANN model for predicting the stochastic generating
+                         sequences in a chaotic unimodal dynamical system [58]. It is observed that the presented
+                         strategy can also be further applicable for applications such as DNA-based groupings,
+                         protein structure arrangement, and financial market time series. The authors of [61]
+                         proposed an ensemble ANN model for forecasting the turning points in the Mackey–Glass
+                         system. An expectation–maximization parameter learning algorithm for the developed
+                         model was used for probability threshold prediction during the out-of-sample validation.
+                         The experimental result from the system proves the viability of the proposed technique and
+                         shows better results than the ANN model alone. In [68], the work presented the RBFNN
+                         model to predict the Shanghai Composite index that is chaotic according to the phase
+                         diagram analysis. The proposed technique’s experimental results are better than the BPNN.
+                         In [78], the hybrid Elman–NARX neural network model is presented to chaotic systems,
+                         such as Mackey–Glass, Lorenz equations, and the real-life sunspot time series, for predicting
+                         the chaotic time series. The proposed method has performed more effectively and accurately
+                         than the AR model, GA, and fuzzy methods. Gao Shuang et al. presented the rough set
+                         neural network model for long-term wind power prediction [80]. The experimental results
+                         show that the rough set method has the least NMAE compared to the other three methods,
+                         the chaos neural network model, persistence model, and rough set neural network model.
+                         Another forecasting method for gas emission rate prediction, known as the global method
+                         based on the BPNN, was proposed in [83]. The proposed model showed good accuracy
+                         and stability predictions than the first-order weighted local prediction method. In [84],
+                         the researchers developed the chaotic RBFNN method for predicting the power systems’
+                         short-term load. The results of the proposed method showed promising results better than
+                         conventional RBFNN. In [12], a chaos RBFNN method was presented for forecasting the
+
+
+                         gasoline engine intake flow’s transient condition. The simulation results showed more
+                         accuracy compared to conventional RBFNN.
+                              In [101], the application of ANN in a chaotic dynamical system for forecasting embed-
+                         ded dimension and robust location was presented. In [103], the selecting and combining
+                         models with the SOM neural network model for long-term chaotic time series prediction
+                         from the Mackey–Glass equation, NN5 tournament, AR model, and sine function were
+                         presented. It is to be noted that this model can be used to assess the selected outcomes of the
+                         modeling techniques by considering the best-predicted SMAPE. In [21], the MLP model for
+                         enhancing the accuracy of a flood prediction through machine learning and chaos theory
+                         was presented. The experimental results of the proposed method performed better than
+                         the Elman-RNN method. It is to be noted that this concept is also applicable to sensors,
+                         allowing for more individual action in severe conditions. Further, the idea can also lower
+                         the system’s total operational costs and ensure next-generation power grids’ effective and
+                         reliable functioning. In [182], the authors developed a hybrid machine learning technique
+                         for forecasting the time series of NN5 using the nearest trajectory model, one-year-cycle
+                         model, and neural network. In [128], the self-adaptive chaotic BPNN algorithm was pro-
+                         posed based on Chebyshev’s chaotic map for predicting the electrical power system’s
+                         load. The presented algorithm results showed better global optimization performance than
+                         conventional BPNN, RBFNN, and Elman networks. The work highlights that the chaotic
+                         neural network regression using the probability density forecast method can predict the
+                         electricity demand. In [131], the deep CNN model was proposed for forecasting Lyapunov
+                         exponents from observed time series in discrete dynamical systems. In [157], the authors
+                         presented the RNN-based LSTM model to predict the mutation rate in a human body
+                         affected by COVID-19. The proposed approach can be extended further by inserting and
+                         deleting mutation rates in the model.
+                              The authors of [162] presented the Deep CNN model using meteorological data to
+                         forecast flight delays. The results of Deep CNN showed to be better than the CNN,
+                         which is proven in terms of weight gradient error and hidden layer error. The authors
+                         of [168] presented the LSTM neural network model to forecast the delay time in a chaotic
+                         optical system and compared the model with the delayed mutual information method
+                         and autocorrelation function method. It is worth noting that the proposed model can also
+                         enhance the security and maturity of optical chaos secure communications. In [183],
+                         the authors presented a LSTM-based forecasting model by integrating ensemble and
+                         reinforcement learning techniques. Further, an adaptive gradient algorithm was used to
+                         train the network and validated on the Lorenz, Duffing, and Rössler systems. The authors
+                         of [184] developed a FFNN-based prediction model to estimate the change in future state
+                         values of a Rössler system. In [169], the authors presented a gate recurrent unit-based Deep
+                         RNN model to forecast time series of three chaotic systems, (i) Lorenz, (ii) Rabinovich–
+                         Fabrikant, and (iii) Rössler, which showed better performance than the LSTM-based Deep
+                         RNN model. This model can also be used for real-time applications to predict the hyper-
+                         turbulent frameworks to control the turbulence or synchronize the framework model.
+
+                         3.2. Fuzzy with ANN-Based Forecasting Approaches
+                              FNN is a hybrid network developed using ANN’s learning ability and fuzzy logic’s
+                         noise handling capability. The architecture of the FNN is also shown in Figure 4. The figure
+                         shows that the network has four layers: the input layer, fuzzification layer, inference layer,
+                         and defuzzification layer (refer to the yellow dotted lines in Figure 4). FNN uses two
+                         approaches, namely (i) Mamdani and (ii) Takagi and Sugeno. Fuzzy logic is represented
+                         using the neural network’s structure and trained using either a BP or an optimization
+                         algorithm. The FNN is implemented in the following three ways:
+                         •    Real inputs with fuzzy weights;
+                         •    Fuzzy inputs with real weights;
+                         •    Fuzzy inputs and fuzzy weights.
+
+
+                               In [50], the authors developed the self-organizing Takagi and Sugeno-type FNN model
+                         for predicting the short-term traffic flow. The experimental results of the developed model
+                         showed to be feasible and more effective than RBFNN. In [54], the researchers developed
+                         the distributed chaotic fuzzy RBFNN method applied to fault section estimation in the
+                         distribution network. The simulation results of the developed strategy achieved better
+                         efficiency, learning ability, fault-tolerance, and low convergence rates than the BPNN model.
+                         On the other hand, in [66], the work presented a subtractive clustering-based FNN for
+                         forecasting the traffic flow and used the GA for deciding the clustering radius. Ding
+                         Guan-bin and Ding Jia-Feng introduced an adaptive neural network-based fuzzy inference
+                         system for predicting the monthly average flow in a hydrological station, which showed
+                         better results than the AR model [67]. The authors of [69] developed the fuzzy descriptor
+                         model integrated with singular spectrum analysis for predicting the various time series,
+                         including Mackey–Glass, Lorenz, Darwin sea level pressure, and the disturbance storm
+                         time index. The presented model results showed to be better than the MLP and RBFNN
+                         models. Another forecasting method known as the FNN model based on chaos theory
+                         for predicting the hydraulic pumps’ vibration signal was proposed in [75]. It is to be
+                         noted that this model can also be used to improve prediction accuracy by readjusting the
+                         minimal embedding dimension optimally. The dynamic recurrent FNN model used to
+                         predict the power systems’ short-term load was developed in [76]. It was proved that the
+                         developed model’s convergence rate and forecasting accuracy are enhanced compared to
+                         the conventional FNN model. In [97], the researchers presented the interval type-2 fuzzy
+                         cerebellar model articulation controller for forecasting the Henon system of chaotic time
+                         series and the chaos synchronization of the Duffing–Holmes system. The proposed model
+                         of simulation results showed to be better than the FNN and interval type-2 FNN.
+                               In [104], the researchers proposed the saliency back-emf-based wavelet FNN model
+                         for a torque observer, using a new maximum torque per ampere control for forecasting the
+                         speed of a sensorless interior permanent magnet synchronous motor. In [110], the authors
+                         presented the embedding theorem-repetitive fuzzy method for predicting the time series
+                         data of Mackey–Glass, Lorenz, and sunspot numbers. The proposed model’s experimental
+                         results provided better forecasting than the simple fuzzy, adaptive neuro-fuzzy inference
+                         and other models in terms of error indices. Qinghai Li and Rui-Chang Lin presented
+                         the self-constructing recurrent FNN model for forecasting the logistic and Henon time
+                         series [112]. The proposed model had a worthier performance in convergence rate and
+                         forecasting accuracy than the self-constructing FNN. The authors of [117] presented the
+                         interactively recurrent fuzzy functions model for predicting the time series data of Lorenz,
+                         Mackey–Glass, and real-time lung sound signal modeling. The benchmark and real-time
+                         models’ results showed to be better than the recurrent networks, such as fuzzy WNN,
+                         self-evolving FNN, ESN, and LS. Luo Chao and Wang Haiyue presented the application of
+                         •    Generalized zonary time-variant fuzzy information granule;
+                         •    LSTM mechanism with FNN model.
+                               For Zurich monthly sunspot numbers, Mackey–Glass time series, and daily maximum
+                         temperatures in Melbourne were used for predicting the granules [141]. The results of
+                         the proposed methods showed better performance than the AR and nonlinear AR neural
+                         network models. In [176], the researchers presented the adaptive RBFNN model for fore-
+                         casting the online vehicle velocity, showing better prediction accuracy and computational
+                         efficiency than the LSTM, NARX, and deep neural network models.
+
+                         3.3. Optimization Algorithms with ANN-Based Forecasting Approaches
+                              The authors of [29] developed the temporal difference GA-based reinforcement learn-
+                         ing neural network model to predict and control two chaotic systems, i.e., the Henon map
+                         and the logistic map. The advantage of the proposed concept is that it can apply directly to
+                         control chaotic physical systems in real-world models. Mohammad Farzad et al. proposed
+                         the GA for forecasting the Mackey–Glass chaotic time series, and the model showed better
+
+
+                         performance than the ANN and polynomials methods [47]. The proposed model may also
+                         be used to forecast any other chaotic systems. In [71], a modified bee evolution using a
+                         PSO-based chaotic neural network model was presented to predict the load in the power
+                         system. The proposed model’s simulation results showed better outcomes than the PSO
+                         algorithm used to develop the power system’s proper planning and has good prospects.
+                         In [96], a hybrid approach using the chaotic self-adaptive PSO algorithm and BPNN was
+                         presented to forecast the polymers’ gas solubility. The proposed model is reliable, accurate,
+                         and practicable for analyzing and designing polymer processing technology, compared to
+                         PSO-tuned BPNN models. It is to be noted that the proposed approach can also be further
+                         extended to tackle actual difficulties. The chaotic PSO tuned ANN model was presented
+                         in [102] to forecast air quality by predicting the particulate concentration. It is to be noted
+                         that this model can also be used to prove the meteorological condition of wind speed, which
+                         has a significant effect at urban intersections for specific matter concentrations. In [107],
+                         the researchers developed the improved GA for forecasting the synchronous parameters of
+                         chaotic time series to achieve higher accuracy and efficiency than GA alone.
+                               The authors of [115] proposed the modified BPNN based on chaotically optimized GA
+                         and simulated annealing algorithms to forecast electrical energy demand in a smart grid. It
+                         is to be noted that this concept can also be relevant to lowering the system’s total operational
+                         costs and ensuring the effective and reliable functioning of next-generation power grids.
+                         Akhmad Faqih et al. developed the extreme learning mechanism using RBFNN and SOM
+                         models to predict the multistep ahead time series of Lorenz’s chaotic system [133]. It is
+                         to be noted that this proposed model can also combine with several behaviors to provide
+                         the best behavior. In [135], the researcher presented the GA and LS-based SVM method to
+                         control fractional-order systems, which achieved better effectiveness and feasibility than
+                         the conventional LS-based SVM. The authors of [139] proposed the principal component
+                         analysis using the chaotic immune PSO tuned GRNN for forecasting the corrosion of
+                         circulating cooling water in a petrochemical enterprise. The approach achieved better
+                         forecasting accuracy and convergence speed than the traditional PSO-tuned GRNN model.
+                         The advantage of the proposed model is that it can also be employed to forecast other
+                         nonlinear systems. In [147], the authors proposed the chaotic PSO algorithm for predicting
+                         the mobile location and achieved better location accuracy and faster convergence rate
+                         than such algorithms as those of Chan, Taylor, and PSO. Ji Jin et al. developed the fractal
+                         dimension-based EMD method and GA tuned BPNN model for predicting the wind speed
+                         in wind farms by considering the atmospheric motions’ fractal feature [152]. The proposed
+                         models showed better performance than LSTM, GA tuned BPNN, and ensemble EMD-
+                         GA-BPNN. It is to be observed that this model can also require further study to optimize
+                         the computational time. It is also necessary to analyze the model on various time scales
+                         to decide the proposed models’ suitability to wind speed series on any timescale. Happy
+                         Aprillia et al. proposed the SSA tuned CNN for predicting the short-term power of PV
+                         systems [158]. The presented algorithm’s results showed better accuracy than the SSA
+                         tuned SVM and LSTM methods. Further, the work highlights that this proposed model can
+                         also address uncertainty, particularly for wet weather, heavy overcast weather, peak time,
+                         and forecasting on typhoon days. Shuzhi Gao et al. developed the soft sensor model using
+                         the CBAS algorithm and Elman neural networks to forecast the conversion rate of vinyl
+                         chloride monomer [171]. The developed model’s performance can be extended by utilizing
+                         the deep neural network approaches.
+
+                         3.4. Wavelet NN-Based Forecasting Approaches
+                              The merits of wavelet and neural networks are hybridized to form a new WNN to
+                         achieve better forecasting ability. WNNs have been used with great success in a wide range
+                         of applications. In some applications, it was proven that if the combination of a neural
+                         network and wavelet is used, the proposed model’s efficiency is increased. The WNN
+                         architecture also follows the same fashion as the network shown in Figure 4. However,
+
+                         in the hidden layer, wavelet basis functions are used as activation functions instead of the
+                         conventional function of the FFNN.
+                                Antonis K. Alexandridis et al. proposed machine learning algorithms, namely wavelet
+                         network and genetic programming, for forecasting the average temperature precisely when
+                         it comes to weather derivative pricing, compared to SVM and RBF [185]. Wei Wu et al.
+                         developed a WNN model for electricity-based chaotic time series data to predict the spot
+                         market prices [38]. In [45], the researchers proposed the WNN model and compared it with
+                         the BPNN model for single-step forecasting of Lorenz and Mackey–Glass chaotic time series.
+                         It is to be noted that this approach can be extended further to be used for real-world chaotic
+                         data. In [74,81], the authors proposed the forecasting models for wind farms. The wavelet
+                         decomposition method and ITSM in [74] showed an improved accuracy compared to ANN
+                         in predicting wind speed and power. Similarly, the developed hybrid algorithm using
+                         wavelet transform, chaotic theory, and grey model in [81] showed better prediction than
+                         the direct prediction method. The models in [74,81] can be further optimized and applied
+                         in various countries’ wind farms, such as the Dongtai wind farm in China. Bo Zhou and
+                         Aiguo Shi presented the phase space reconstruction-based WNN method to predict Henon
+                         and Lorenz’s chaotic time series [95]. The significant benefit of this proposed method
+                         over a WNN is the improvement in SMAPE. It is to be noted that this concept can also
+                         help optimize the process parameters and the execution time during the simulation. Tian
+                         Zhongda et al. presented the wavelet transform and multiple model fusion for forecasting
+                         the Lorenz and Mackey–Glass time series and achieved more effective performance in
+                         terms of SMAPE [120]. The models can be applied to real-world chaotic systems, such
+                         as geomagnetic series, network traffic series, etc. In [130], the ANN-discrete wavelet
+                         transform method was presented for forecasting the photovoltaic system’s power based on
+                         chaos theory. The significant benefit of this method over the ANN and ANN-phase space
+                         reconstruction is the improvement in the Theil index.
+
+                         3.5. Other Approaches
+                              The authors of [56] developed the generalized EKF for forecasting the Lorenz time
+                         series with various Bernoulli distribution probabilities, which achieved an acceptable
+                         prediction precision and good robustness. Xue-dong Wu et al. proposed the GPF and
+                         compared it with UKF and EKF to forecast the Mackey–Glass time series [73]. In [106],
+                         the researchers proposed the EKF-based MPSV method to estimate the transmitted signal
+                         in power line communications and confirmed the better efficiency than the inverse filter-
+                         based MPSV method. However, the real-time validation of the proposed approach is the
+                         research gap. In [129], the authors developed the equivalent model using EKF to predict
+                         the state of charge in power Li-ion batteries. Yijun Xu et al. proposed the polynomial chaos-
+                         based Kalman filter to predict the nonlinear system dynamics [146]. In [160], the authors
+                         presented the UKF for forecasting the parameters of the gray-box model for dynamic EEG
+                         system modeling and achieved the lowest RMSE compared to the particle filter and EKF.
+
+                         4. Forecasting of Chaotic Time Series in Various Applications
+                              As mentioned in Table 1, various parameters have been forecast in multiple ap-
+                         plications using the machine learning-based approaches detailed in Section 3. The list
+                         of these forecasting parameters categorized into the different applications is given in
+                         Figure 5. The detailed description of these forecasting parameters using various approaches
+                         in various fields is explained underneath.
+
+                         4.1. Power and Energy
+                              This section describes power and energy forecasting techniques, using various chaotic
+                         time series approaches applied in wind farms, solar, photovoltaic systems, etc.
+                         4.1.1. Wind Farms
+                              Many applications of wind power and speed forecasting approaches have been devel-
+                         oped based on chaotic characteristics or chaotic time series and applied on various wind
+                         farms. For instance, the statistical type of forecasting approaches for predicting wind power,
+                         speed, and load for short-term and long-term wind power, speed, and load prediction in
+                         Beijing in China are as follows:
+                         •         ITSM with wavelet decomposition method [74];
+                         •         SVM [16];
+                         •         Rough set neural network [80];
+                         •         BFA tuned double-reservoir ESN [166].
+                             The approaches, as mentioned earlier, showed good short-term and long-term per-
+                         formance, but the computational complexity is high to complete the task. Similarly, many
+                         other works have been attempted to predict weather conditions for wind farms whose
+                         operations are more complex.
+                             Various researchers have proposed hybrid prediction methods to enhance accuracy.
+                         These approaches were made by integrating the following:
+                         •         Wavelet transforms with chaotic time series and grey model [81];
+                         •         Hilbert–Huang transforms with Hurst analysis [108];
+                         •         Hybrid neuro evolutionary [175].
+                              The hybrid approaches mentioned above with multistep chaotic characteristics were
+                         validated for short-term forecasting of wind power at the Dongtai wind farm and Hebei
+                         province in the east of China. The work highlights that EMD-based combined forecast-
+                         ing methods can improve short-term forecasting accuracy based on their characteristics.
+                         The surrogate data technique and spectral analysis methods are applied to forecast wind
+                         wave height, period, and direction for three-hourly chaotic time series from three stations
+                         in the Caspian’s southern, central, and northern parts of the sea [109]. The hybrid approach
+                         developed using ensemble EMD-sample entropy and the full parameters continued frac-
+                         tion model were developed for predicting the wind power of farm location at Xinjiang,
+                         China [119]. Moreover, the Markov chain switching regime model developed in [144]
+                         used hourly, short-term, and long-term chaotic time series data for predicting wind speed
+                         and direction of the farm located at Bonneville Power Administration control area in the
+                         Northwest USA. It is to be noted that these proposed approaches can also be used for the
+
+
+                         proper planning and scheduling of wind power. The self-adaptive and artificial intelligence
+                         type forecasting techniques for predicting the wind speed are as follows:
+                         •    Fractal dimension-Lorenz stenflo-Ensemble EMD;
+                         •    GA tuned BPNN model;
+                         •    Empirical dynamical model [152,165].
+                              For short-term prediction of wind speed considers the atmospheric motion and fractal
+                         feature at Abbotsford in Canada, and Kansas and Missouri in the USA. It is to be noted
+                         that better results can be generated using exogenous variables in the ANN approach.
+
+                         4.1.2. Solar and Photovoltaic Systems
+                              The recurrent predictor neural network model presented in [36] is based on an ex-
+                         tended algorithm of self-adaptive BP through a time learning algorithm for predicting the
+                         annual sunspot time series in Skylab. Similarly, the time-delay neural network model [48]
+                         and the multi-layered neural network-based co-evolutionary algorithm [52] are used for
+                         predicting the annual sunspot time series of the space laboratory launched by the USA in
+                         1973 and the sunspot index data center in Belgium, respectively. The ANN-based discrete
+                         transform using chaos theory [130], ensemble EMD based on optimized chaotic phase
+                         space reconstruction [155], SSA tuned CNN [158], and CGO [172] are used for predicting
+                         the power, voltage, and current of PV system in Beni Mellal, Morocco, St Lucia campus
+                         PV station, Australia. The k-fold cross-validation with GRNN reported in [134] is used
+                         for predicting the accuracy of sunspot under different embedding dimensions for phase
+                         space reconstruction of chaotic time series according to the Takens theorem in the Solar
+                         Influences Data Analysis Center, Belgium.
+
+                         4.1.3. Other Power Systems
+                               Under certain circumstances, chaos in an electrical power system can show abnormal
+                         oscillations, threatening the electrical grid’s reliability and stability. Because of the nonlin-
+                         earities of electricity networks, chaos theory is a high priority. Hence, the application of
+                         chaos theory and several forecasting approaches to improve the accuracy and reliability of
+                         load forecasting. The proposed forecasting approaches for predicting the electrical daily
+                         peak load of the power systems, such as South Korea Electric Power Corporation, Daqing
+                         oilfield company in China, New South Wales in Australia, and North China city, are as
+                         follows:
+                         •    ANN [26];
+                         •    Bee evolution modifying PSO tuned chaotic neural network [71];
+                         •    Adding-weighted LLE [72];
+                         •    Dynamic recurrent FNN [76];
+                         •    Chaotic RBFNN [84];
+                         •    Chaotic local weighted linear forecast algorithm based on angle cosine [88].
+                              The self-adaptive chaotic BPNN and parallel chaos algorithm reported in [128],
+                         and [118], respectively, are used for forecasting the short-term electrical power load in
+                         the China network. The limitations of the proposed approaches are eliminated with the
+                         application of hybridized chaotic RBFNN-quantile regression model for forecasting the
+                         weather, seasons, wind power, and electricity price. The hybrid forecasting approaches
+                         developed for predicting the dynamic characteristics of electricity are the wavelet decompo-
+                         sition methodology [120], variational mode decomposition-maximum relevance minimum
+                         redundancy based BPNN-LS-SVM [156], and short- and medium-term load in the Xi’an
+                         power grid corporation, China.
+                              Short-term electricity price forecasting has become crucial in the power markets, as it
+                         allows for the foundation for market participants’ profit maximization. The proposed
+                         methods for forecasting the short-term electricity spot market prices and the marginal price
+                         at the New England and California electricity markets in the USA are as follows:
+
+                         •    Nonlinear auto-correlated chaotic model-based WNN [38];
+                         •    RNN [40];
+                         •    LS-SVM algorithm [60];
+                         •    Add-weighted one-rank multi-steps prediction model [63].
+                              The generation companies can decide on scheduling generators and provide high-
+                         quality power services to customers. Thus, the validation algorithm presented in [93]
+                         is based on the voltage sensor applied to a DC zonal shipboard electric power system,
+                         using decentralized polynomial chaos theory for the sensor validation decentralized state
+                         prediction. In addition, it is to be reported that the presented conventional algorithms were
+                         improved using artificial intelligence techniques. The independent component analysis
+                         method reported in [94] for predicting the amplitude and frequency of highly chaotic
+                         distorted power system signals is presented based on duffing oscillator solutions. The pro-
+                         posed approach can be used for the real-time control and measurement of the fundamental
+                         frequency of a power system while focusing mainly on chaotic disturbances. The maxi-
+                         mum velocity criterion method, sinusoidal wave frequency modulation, and chaotic control
+                         algorithm are for forecasting the chaos and suppressing the predicted chaos to increase
+                         the security for cyber–physical power systems [112]. The modified BPNN, chaos-search
+                         GA, and SA algorithms are applied to predict a smart grid’s short-term electrical energy
+                         demand in New South Wales, Australian grid [115]. The proposed approach can also lower
+                         the system’s total operational costs and ensure the next-generation power grids’ effective
+                         and reliable functioning. The polynomial chaos expansion-based Langevin Markov chain
+                         Monte Carlo and multi fidelity-surrogate-based Bayesian inference via adaptive importance
+                         sampling predict decentralized dynamic parameters, such as inertia, exciter gains, damping
+                         ratio, and the droop of the synchronous generator in New England, USA [138,151].
+
+                         4.2. Hydrological Systems
+                               The RBFNN model is developed to estimate the Mekong River’s nonlinear hydrologi-
+                         cal time series in Thailand and Laos, the Chao Phraya River in Thailand, and sea-surface
+                         temperature anomaly data [43]. In addition, the presented approach can also be applied
+                         to other geological time series. In [67], an adaptive fuzzy inference-based neural network
+                         model is developed to predict the medium- and long-term hydrological residual time
+                         series. The data are collected from the Guantai hydrological station, Zhang River, China.
+                         An empirical, statistical, and chaotic nonlinear dynamic model in [19] was applied to
+                         forecast the stream water temperature from the available solar radiation and air temper-
+                         ature in the Lake Tahoe basin, California, Nevada, USA. The chaotic FNN for predicting
+                         the hydraulic pump’s vibration signal was presented in [75]. It is to be reported that the
+                         proposed approach can be extended further to improve prediction accuracy by readjusting
+                         the minimal embedding dimension optimally. The coupled quantity–pattern similarity
+                         model reported in [18] predicts the monthly precipitation of hydrological systems in the
+                         Danjiangkou reservoir basin, China. The proposed approach can also be applied to time
+                         series with various lead time scales.
+
+                         4.3. Communication Signals and Systems
+                              The complex weighted neural network algorithm in [25] solves the principal com-
+                         ponent analysis problem and high-resolution adaptive bearing prediction. The proposed
+                         approach is especially effective in circumstances where the hermit matrix progressively
+                         changes over time due to adaptive tracking. The BPNN tuned SVM grey model in [55] is
+                         used for forecasting the signal deviation time series. The anchor selection method is based
+                         on polynomial chaos expansions [86] for angle-of-arrival prediction-based positioning sys-
+                         tems. The chaos algorithm in [92] is proposed for forecasting the radio wave propagation
+                         in the ionosphere. The proposed algorithm can also forecast a set of radio transmission
+                         signals at a fading amplitude time series location. The phase space reconstruction-LS-SVM
+                         in [98] is developed to predict FM radio’s band occupancy rate in German Rohde, Schwarz
+                         company, and fixed radio monitoring station of Xihua University, USA. The proposed ap-
+
+
+                         proach can be extended further to improve multistep time series prediction. The minimum
+                         phase-space volume-EKF equalization method presented in [106] is for forecasting the
+                         chaos in power line communications. The LLE, Higuchi’s fractal dimension, and sample
+                         entropy techniques are used for predicting the fractals, chaos, and parametric entropy
+                         features of surface electromyography signals during dynamic contraction of biceps muscles
+                         under a varying load [127]. The proposed process can also be helpful in physiotherapy
+                         and athletic biomechanics for testing muscular fitness. A deterministic chaotic sequences
+                         method is developed to forecast quadrature baseband signals and orthogonal frequency
+                         division multiplexing-based cognitive radio channel [137]. The proposed approach can also
+                         be applicable to bit error rate performance, which is projected to improve if an appropriate
+                         power management method is used.
+
+                         4.4. Oil and Gas
+                              The global prediction method uses a BPNN model for forecasting the gas emission rate
+                         in the Hegang Nanshan mine located in China [83]. The proposed model showed better
+                         step, accuracy, and stability predictions. The improved Duffing oscillator chaotic traffic
+                         prediction model in [85] was developed for coal gas’ traffic flow prediction for a coal mine.
+                         The proposed approach can also increase signal detection accuracy. The chaos RBFNN
+                         method in [12] predicts the intake airflow of the gasoline engine. The coal mine ventilation
+                         systems’ management technology reported in [17] can predict the gas concentration in
+                         Jining, Shandong, China. As a result, the system can provide reliable assurance for mine
+                         safety production.
+
+                         4.5. Other Systems
+                              The multistep time series prediction in diode resonator circuits is made by integrating
+                         the nonlinear signal prediction method with a BPNN [51]. The proposed approach can be
+                         extended further to be used in other chaotic time series. The integration of nonlinear time
+                         series analysis and backpropagation MLP for multistep nonlinear time series forecasting
+                         of chaotic diode resonator circuits was reported in [59]. The distributed chaotic fuzzy
+                         RBFNN is exploited for distributed network fault section prediction [54]. The global
+                         prediction of chaos method forecasts the chaotic instantaneous generator output power
+                         in Liaoning province in China [20]. The chaotic adding-weight dynamic local predict
+                         model predicts the pseudo-random number generator of the initial sequence number in
+                         the transmission control protocol stack [62]. The chaos-based Rivest Shamir Adleman
+                         algorithm and chaos-based random number generator forecast the security vulnerabilities
+                         of the cryptosystem [142].
+
+                         5. Performance Measures
+                               This section discusses the various performance measures used for chaotic time series
+                         forecasting approaches. According to the literature review summary in Table 1, it can be
+                         concluded that there are many approaches for chaotic time series forecasting. However, it is
+                         challenging to choose one proposed method that performs better based on the performance
+                         measures. Table 1 also shows that the researchers have evaluated the performance of
+                         the forecasting approach using various statistical errors. The different classifications of
+                         statistical performance measures used for chaotic time series forecasting are mean, relative,
+                         percentage, prediction, and coefficients. The classification and its subcategories are shown
+                         in Figure 6. The formula for computing these performance measures is demonstrated in
+                         Figure 7. In Figure 7, n denotes the number of samples, and Ya,i and Yp,i are the actual and
+                         predicted outputs by the chaotic time series forecasting model. Further, Ȳa , and Ȳp are the
+                         averages of Ya,i and Yp,i .
+
+
+                                                                  As shown in Figures 6 and 7, most of the performance measures used for chaotic time
+                                                             series forecasting are mean errors. Further, the review summary in Table 1 shows that MSE
+                                                             and its variants are the most widely used performance measures for chaotic time series
+                                                             forecasting. The MSE and its variants measure the error between Ya and Yp , and the closest
+                                                             value to zero indicates a better estimation of the forecasting approach [186,187]. After mean
+                                                             errors, the percentage errors are the second most used performance measure for chaotic
+                                                             time series forecasting. The percentage errors measure the percentage error between Ya
+                                                             and Yp . The closer values of percentage error to zero also indicate a better estimation of
+                                                             the forecasting approach. On the other hand, the coefficient of determination R2 is most
+                                                             widely used to indicate the forecasting approach’s predictive ability in fitting the actual
+
+
+                         data Ya [188,189]. Thus, the values of R2 range from zero to one, and the value equal to 1.0
+                         indicates a perfect fit. The summary in Table 1 also shows that most of the researchers used
+                         a combination of different performance measures for evaluating the forecasting approach.
+                         The combinations are MAE, MAPE, and RMSE; MSE, MAPE, and RMSE; MAE and RMSE;
+                         MSE and RMSE; R2 and MSE; R and MSE, etc.
+
+                         6. Conclusions
+                              This article reviewed various approaches for chaotic time series forecasting based
+                         on machine learning in multiple areas, such as wind farms, PV systems, hydrological
+                         systems, communication signals and systems, oil and gas, and other systems. At the
+                         beginning of this paper, the chaotic system/time series and the importance of chaos
+                         forecasting were introduced. Next, the various machine learning-based chaotic time series
+                         forecasting approaches were presented. These approaches use WNN, FNN, CNN, LSTM,
+                         and Markov chain models. Then, a review of the prediction of various parameters in
+                         multiple applications using machine learning-based techniques is presented. This review
+                         concludes that traditional prediction methods can hardly obtain satisfactory results. Hence,
+                         many chaotic time series prediction methods were developed using machine learning-based
+                         approaches, which enhanced their efficiency and accuracy.
+
+                         6.1. Findings
+                             This review summarizes the findings of various approaches developed for multiple
+                         applications as follows:
+                         •    The wavelet decomposition method predicted wind speed and power accurately and
+                              effectively using improved time series, chaotic time series, and grey models [74,81].
+                              The false nearest neighbor analysis method forecast the chaotic behavior of the wind–
+                              wave characteristics, including wave period and height [109].
+                         •    Hilbert–Huang transform and Hurst analysis is a proper choice to forecast the multi-
+                              scale chaotic characteristics of wind power [108]. In contrast, ensemble EMD and full
+                              parameters continued fraction is appropriate for predicting wind power’s nonlinear
+                              chaotic time series [119].
+                         •    The empirical dynamic model presented in [165] forecast the wind speed for various
+                              height levels. At the same time, the fractal dimensional-based self-adaptive model for
+                              wind speed predicted atmospheric motion and fractal features [152].
+                         •    The approaches such as the ordinary least square method [28], recurrent predictor
+                              neural network [36], hybrid Elman–NARX neural network [78], and embedding
+                              theorem-repetitive fuzzy [21] forecast the sunspot number (chaotic time series) effec-
+                              tively. In all these cases, the sunspot data were collected from the world data center
+                              for Belgium’s sunspot index.
+                         •    The combination of chaos theory and techniques, such as ensemble EMD and CNN-
+                              SSA, effectively forecast the PV system’s output power under certain conditions, such
+                              as rainy, heavy cloudy, lightly cloudy, and sunny conditions [155,158]. The data were
+                              collected from the St Lucia campus PV station, Australia, in all these cases.
+                         •    The integration of the BPNN with GA, SA algorithms [115], parallel chaos [118],
+                              wavelet decomposition-based methods [120,157] was successfully used to forecast the
+                              deregulated power system’s short-term electrical energy demand. These methods
+                              help in proper economic power dispatching with an enhanced demand response that
+                              assists in efficient spot price-fixing in the deregulated power market.
+                         •    The regression analysis models using ANN and chaotic nonlinear dynamic [73] and
+                              coupled quantity-pattern similarity [18] were validated to predict the stream water
+                              temperature and monthly precipitation.
+                         •    The minimum phase space-based EKF method was used to forecast the blind equal-
+                              ization in power line communication systems to overcome channel noise [106].
+
+
+
+                         •    The response surface-based Bayesian inference [149] and PCE-based hybrid MCMC [163]
+                              approaches were used to predict the generator’s dynamic parameters, such as inertia,
+                              exciter gains, damping ratio, and droop.
+                         •    The independent component analysis method in [94] adequately estimated the ampli-
+                              tude and frequency of power systems’ highly distorted signals to avoid the ferroreso-
+                              nance effect.
+                         •    The Markov chain switching regime model enhanced the precision accuracy and is
+                              helpful for wind power forecasting during scheduling and planning [144].
+
+                         6.2. Future Directions
+                              This comprehensive review helped open up new scopes in the field of chaotic time
+                         series forecasting approaches in various applications and is highlighted underneath.
+
+                         •    Chaotic time series analysis and SVM can estimate short-term wind speeds while con-
+                              sidering weather conditions and more complex scenarios of wind farm operations [16].
+                         •    To the dispersed power resource system, the wind power generation unit can be
+                              connected to the grid of this system through high-quality forecasting of the parameters
+                              using the Jacobian matrix estimate method and weather data optimal points using
+                              deterministic chaos [104].
+                         •    EMD-based forecasting approaches can increase short-term wind power prediction
+                              accuracy based on their behavior characteristics. Furthermore, the relationship be-
+                              tween different scale subsequences and numerical weather forecasting can improve
+                              the accuracy of this short-term wind power forecasting [108].
+                         •    The hybrid neuro evolutionary approach, i.e., adaptive variational mode decomposition-
+                              AOA-LSTM proposed for wind farms, has employed multiple outlier identification
+                              methods with optimization and decomposition procedures to improve forecasting
+                              outcomes [175]. This method can also be adaptable to other geographies.
+                         •    The independent component analysis method can be extended for real-time monitor-
+                              ing and controlling the power system’s fundamental frequency with an appropriate
+                              time delay between observed data frames [94].
+                         •    The precision accuracy of the response surface-based Bayesian inference method
+                              proposed for the power systems to predict the dynamic parameters has to be improved
+                              when there is a substantial outrageous deviation in the boundaries [149].
+                         •    The coupled quantity pattern similarity model proposed for the prediction of monthly
+                              precipitation can also be applied to the time series with different lead time scales [18].
+                         •    The hybrid algorithms proposed using CNN and wavelet transforms for predicting
+                              the chaotic time series of Chen, Lorenz, Mackey–Glass, and sunspot numbers can
+                              also be used for real-time series, such as geomagnetic, network traffic, and weather
+                              systems [13,170].
+                         •    The forecasting accuracy of an online vehicle velocity prediction approach proposed
+                              using adaptive RBFNN can be enhanced using additional data, such as driving time,
+                              climate, gas, and brake pedals [176].
+
+                         Author Contributions: Conceptualization, B.R. and K.B.; formal analysis, B.R.; investigation, B.R.;
+                         resources, K.B.; data curation, K.B.; writing—original draft preparation, B.R.; writing—review and
+                         editing, K.B.; visualization, K.B.; supervision, K.B. All authors have read and agreed to the published
+                         version of the manuscript.
+                         Funding: This research received no external funding.
+                         Institutional Review Board Statement: Not applicable.
+                         Informed Consent Statement: Not applicable.
+                         Data Availability Statement: Not applicable.
+                         Conflicts of Interest: The authors declare no conflict of interest.
+
+
+                         Abbreviations
+                         The following abbreviations are used in this manuscript:
+                         ACF         Auto correlation function
+                         ANN         Artificial neural networks
+                         AOA         Arithmetic optimization algorithm
+                         APE         Absolute percentage error
+                         APSK        Amplitude phase shift keying
+                         AR          Autoregressive
+                         ARE         Average relative error
+                         ARIMA       Autoregressive integrated moving average
+                         ARMA        Autoregressive moving average
+                         ARMSE       Average root mean square error
+                         BFA         Bacterial foraging algorithm
+                         BP          Backpropagation
+                         BPNN        Backpropagation neural network
+                         CBAM        Convolutional block attention module
+                         CBAS        Chaos beetle antennae search algorithm
+                         CCO         Cluster chaotic optimization
+                         CGO         Chaos game optimization
+                         CMSE        Cumulative mean square error
+                         CVRMSE      Coefficient of variance of the root mean square error
+                         DCSK        Differential chaos shift keying
+                         DMI         Delayed mutual information
+                         EKF         Extended Kalman filter
+                         EMD         Empirical mode decomposition
+                         ESN         Echo state network
+                         FFNN        Feed-forward neural network
+                         GA          Genetic algorithm
+                         GPF         Gaussian particle filtering
+                         GRNN        Generalized regression neural network
+                         GWO         Grey wolf optimization
+                         HBO         Honey bee optimization
+                         HEA         Hybrid evolutionary adaptive
+                         HFD         Higuchi’s fractal dimension
+                         IGWO        Improved grey wolf optimizer
+                         ITSM        Improved time series method
+                         LLE         Largest Lyapunov exponent
+                         LLNF        Locally linear neuro-fuzzy
+                         LS          Least square
+                         MAD         Mean absolute deviation
+                         MAE         Mean absolute error
+                         MAPE        Mean absolute percentage error
+                         MARE        Mean absolute relative error
+                         MCMC        Monte Carlo Markov chain
+                         MLE         Machine learning ensembles
+                         MLP         Multilayer perceptron
+                         MMSE        Minimum mean square error
+                         MPSV        Minimum phase space volume
+                         MRE         Mean relative error
+                         MRFO        Manta ray foraging optimization
+                         MRPE        Maximal relative percentage error
+                         MSD         Mean squared deviation
+                         MSE         Mean squared error
+                         MSLE        Mean squared logarithmic error
+                         MSPd E      Mean squared prediction error
+                         NARX        Nonlinear autoregressive exogenous model
+                         NMAE        Normalized mean absolute error
+                         NMAPE       Normalized mean absolute percentage error
+
+                                  NMSE        Normalized mean square error
+                                  NRMSE       Normalized root mean square error
+                                  NWP         Numerical weather prediction
+                                  PCR         Principal component regression
+                                  PCS         Polynomial chaos surrogates
+                                  Pd E        Prediction error
+                                  PE          Percentage error
+                                  PID         Proportional–integral–derivative
+                                  PLS         Partial least square
+                                  PRE         Percentage relative error
+                                  PSO         Particle swarm optimization
+                                  PV          Photovoltaic
+                                  QAM         Quadrature amplitude modulation
+                                  R           Coefficient of correlation
+                                  R2          Coefficient of determination
+                                  RBF         Radial basis function
+                                  RBFNN       Radial basis function neural network
+                                  RE          Relative error
+                                  RMSE        Root mean squared error
+                                  RNN         Recurrent neural network
+                                  RR          Ridge regression
+                                  RRMSE       Relative root mean squared error
+                                  SA          Simulated annealing
+                                  SMAPE       Symmetric mean absolute percentage error
+                                  SOM         Self-organizing map
+                                  SSA         Salp swarm algorithm
+                                  SVM         Support vector machine
+                                  TCN         Temporal convolutional network
+                                  TLBO        Teaching–learning-based optimization
+                                  TTLS        Truncated total least squares
+                                  UKF         Unscented Kalman filter
+                                  ULN         Universal learning network
+                                  YCO         Yield-constrained optimization
